@@ -67,14 +67,14 @@ const outline = [
 
 // n = numero tappa, tipo: nat | city | coast | transit
 const stops = [
-  {n:1,  name:'Marrakech',           ll:[31.63,-8.0],   type:'city',    nights:2, drive:'',      note:'Medina, Jemaa el-Fnaa, souk. Ritiro delle auto.', lab:[0,28,'middle']},
-  {n:2,  name:'Cascate di Ouzoud',   ll:[32.02,-6.72],  type:'nat',     nights:1, drive:'~3 h',  note:'Cascate di 110 m, sentieri e barchette.',        lab:[-12,-8,'end']},
-  {n:3,  name:'Fès',                 ll:[34.03,-5.0],   type:'city',    nights:2, drive:'~5,5 h',note:'Medina medievale. Sosta ai cedri di Azrou.', lab:[-12,4,'end']},
-  {n:4,  name:'Midelt',              ll:[32.68,-4.74],  type:'transit', nights:1, drive:'~3 h',  note:'Solo tappa. Notte fredda, serve riscaldamento.', lab:[12,4,'start']},
-  {n:5,  name:'Merzouga',            ll:[31.10,-4.01],  type:'nat',     nights:2, drive:'~4,5 h',note:'Dune dell’Erg Chebbi, notte in campo tendato.',  lab:[12,4,'start']},
-  {n:6,  name:'Gole del Todra / Dadès',ll:[31.45,-5.75],type:'nat',     nights:2, drive:'~3 h',  note:'Pareti di 300 m, oasi, strada a tornanti.',      lab:[0,-14,'middle']},
-  {n:7,  name:'Aït Benhaddou',       ll:[31.05,-7.13],  type:'city',    nights:1, drive:'~3,5 h',note:'Ksar UNESCO di fango, set di molti film.',       lab:[0,26,'middle']},
-  {n:8,  name:'Essaouira',           ll:[31.51,-9.77],  type:'coast',   nights:2, drive:'~7 h',  note:'Via Tizi n’Tichka e Marrakech. Costa e pesce.', lab:[-12,4,'end']},
+  {n:1,  name:'Marrakech',           ll:[31.63,-8.0],   type:'city',    nights:2, drive:'',      note:'Medina, Jemaa el-Fnaa, souk. Ritiro delle auto.', lab:[0,32,'middle']},
+  {n:2,  name:'Cascate di Ouzoud',   ll:[32.02,-6.72],  type:'nat',     nights:1, drive:'~3 h',  note:'Cascate di 110 m, sentieri e barchette.',        lab:[-18,-2,'end']},
+  {n:3,  name:'Fès',                 ll:[34.03,-5.0],   type:'city',    nights:2, drive:'~5,5 h',note:'Medina medievale. Sosta ai cedri di Azrou.', lab:[-18,-2,'end']},
+  {n:4,  name:'Midelt',              ll:[32.68,-4.74],  type:'transit', nights:1, drive:'~3 h',  note:'Solo tappa. Notte fredda, serve riscaldamento.', lab:[18,-2,'start']},
+  {n:5,  name:'Merzouga',            ll:[31.10,-4.01],  type:'nat',     nights:2, drive:'~4,5 h',note:'Dune dell’Erg Chebbi, notte in campo tendato.',  lab:[18,-2,'start']},
+  {n:6,  name:'Gole del Todra / Dadès',ll:[31.45,-5.75],type:'nat',     nights:2, drive:'~3 h',  note:'Pareti di 300 m, oasi, strada a tornanti.',      lab:[0,-32,'middle']},
+  {n:7,  name:'Aït Benhaddou',       ll:[31.05,-7.13],  type:'city',    nights:1, drive:'~3,5 h',note:'Ksar UNESCO di fango, set di molti film.',       lab:[0,30,'middle']},
+  {n:8,  name:'Essaouira',           ll:[31.51,-9.77],  type:'coast',   nights:2, drive:'~7 h',  note:'Via Tizi n’Tichka e Marrakech. Costa e pesce.', lab:[-18,-2,'end']},
   {n:9,  name:'Marrakech (rientro)', ll:[31.63,-8.0],   type:'city',    nights:1, drive:'~3 h',  note:'Cuscinetto prima del volo.',                      lab:null}
 ];
 
@@ -117,10 +117,13 @@ for (const s of stops) {
   if (s.n === 9) continue; // stesso punto della tappa 1
   const x = X(s.ll[1]), y = Y(s.ll[0]);
   const num = s.n === 1 ? '1·9' : s.n;
+  const nts = s.n === 1 ? `${s.nights} + ${stops.find(t => t.n === 9).nights} notti` : `${s.nights} ${s.nights === 1 ? 'notte' : 'notti'}`;
   out += `<g><circle cx="${x}" cy="${y}" r="${s.n === 1 ? 15 : 12}" fill="${color(s.type)}" stroke="var(--bg)" stroke-width="2"/>
     <text x="${x}" y="${y + 4}" text-anchor="middle" font-size="${s.n === 1 ? 10 : 12}" font-weight="700" fill="var(--bg)">${num}</text>
     <text x="${x + s.lab[0]}" y="${y + s.lab[1]}" text-anchor="${s.lab[2]}" font-size="13" font-weight="600" fill="var(--ink)"
-      stroke="var(--land)" stroke-width="3" paint-order="stroke">${s.name}</text></g>`;
+      stroke="var(--land)" stroke-width="3" paint-order="stroke">${s.name}</text>
+    <text x="${x + s.lab[0]}" y="${y + s.lab[1] + 13}" text-anchor="${s.lab[2]}" font-size="10" fill="var(--muted)"
+      stroke="var(--land)" stroke-width="3" paint-order="stroke">${nts}</text></g>`;
 }
 svg.innerHTML = out;
 // sfondo a pillola dietro ogni valore delle ore, misurato sul testo
