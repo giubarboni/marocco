@@ -10,7 +10,7 @@
     --bg: #1c1a17; --ink: #efe9df; --muted: #a49b8f; --line: #3a352f;
     --sea: #22303a; --land: #3a3427; --land-edge: #5a5040;
     --nat: #6fb27f; --city: #e58a5a; --coast: #6aaad4; --transit: #a39c90;
-    --route: #efe9df; --route-line: color-mix(in srgb, var(--route) 62%, var(--land)); --tag-bg: var(--route-line); --tag-ink: #3a3427;
+    --land-africa: color-mix(in srgb, var(--land) 65%, black); --route: #efe9df; --route-line: color-mix(in srgb, var(--route) 62%, var(--land)); --tag-bg: var(--route-line); --tag-ink: #3a3427;
   }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.45 system-ui, sans-serif; }
@@ -140,7 +140,7 @@ const svg = document.getElementById('map');
 let out = `<defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
   <path d="M0,1 L9,5 L0,9 z" fill="var(--route-line)"/></marker></defs>
   <rect x="-3000" y="-3000" width="7000" height="7000" fill="var(--sea)"/>
-  <g fill="var(--land)" stroke="var(--land-edge)" stroke-width="1.5" vector-effect="non-scaling-stroke">${[africa, madagascar].map(a => `<polygon points="${a.map(P).join(' ')}" vector-effect="non-scaling-stroke"/>`).join('')}</g>
+  <g fill="var(--land-africa)" stroke="var(--land-edge)" stroke-width="1.5" vector-effect="non-scaling-stroke">${[africa, madagascar].map(a => `<polygon points="${a.map(P).join(' ')}" vector-effect="non-scaling-stroke"/>`).join('')}</g>
   <polygon points="${outline.map(P).join(' ')}" fill="var(--land)" stroke="var(--land-edge)" stroke-width="1.5"/>
   <g fill="var(--muted)" font-size="13" font-style="italic" opacity=".8">
     <text x="24" y="250">Oceano Atlantico</text>
