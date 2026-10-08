@@ -9,14 +9,14 @@
     --bg: #faf7f2; --ink: #2a2622; --muted: #7a7168; --line: #ddd5c8;
     --sea: #dfeaf0; --land: #f1e9d9; --land-edge: #cdbfa5;
     --nat: #3f7d4e; --city: #c5612f; --coast: #2f6f9a; --transit: #8a8378;
-    --route: #2a2622;
+    --route: #2a2622; --tag-bg: #6b5640; --tag-ink: #faf7f2;
   }
   @media (prefers-color-scheme: dark) {
     :root {
       --bg: #1c1a17; --ink: #efe9df; --muted: #a49b8f; --line: #3a352f;
       --sea: #22303a; --land: #3a3427; --land-edge: #5a5040;
       --nat: #6fb27f; --city: #e58a5a; --coast: #6aaad4; --transit: #a39c90;
-      --route: #efe9df;
+      --route: #efe9df; --tag-bg: #8a6f52; --tag-ink: #1c1a17;
     }
   }
   * { box-sizing: border-box; }
@@ -89,12 +89,14 @@ const stops = [
 const via = { fes:[34.03,-5.0], tizi:[31.3,-7.36] };
 const at = n => stops.find(s => s.n === n).ll;
 
-// [da, a, curvatura] — la curvatura separa andata e ritorno sulla stessa tratta.
+// [da, a, curvatura, ore, dx, dy, ancora] — ore = etichetta sul tratto (dx/dy spostano il testo).
 const segs = [
-  [at(1), at(2), 0], [at(2), at(3), 0], [at(3), at(4), 0], [at(4), at(5), 0],
-  [at(5), via.fes, 18], [via.fes, at(6), 0], [at(6), at(7), 0], [at(7), at(8), 0],
-  [at(8), at(9), 0], [at(9), via.tizi, 0], [via.tizi, at(1), 0],
-  [at(1), at(10), 0], [at(10), at(1), 22]
+  [at(1), at(2), 0, '3 h'], [at(2), at(3), 0, '4 h'], [at(3), at(4), 0, '1,5 h', -10, 4, 'end'],
+  [at(4), at(5), 0, '4 h', 12, 4, 'start'],
+  [at(5), via.fes, 18, '4 h', -12, 4, 'end'], [via.fes, at(6), 0, '3 h'],
+  [at(6), at(7), 0, '4,5 h'], [at(7), at(8), 0, '3 h'], [at(8), at(9), 0, '3,5 h'],
+  [at(9), via.tizi, 0], [via.tizi, at(1), 0, '4 h', 14, 16, 'start'],
+  [at(1), at(10), 0, '3 h', 0, -8], [at(10), at(1), 22, '3 h', 0, 14]
 ];
 
 const color = t => `var(--${t === 'transit' ? 'transit' : t})`;
@@ -110,13 +112,17 @@ let out = `<defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidt
     <text x="${X(-6.3)}" y="${Y(29.3)}" text-anchor="middle">Sahara</text>
   </g>`;
 
-for (const [a, b, bend] of segs) {
+const labels = [];
+for (const [a, b, bend, h, ox = 0, oy = 4, anchor = 'middle'] of segs) {
   const [x1, y1] = [X(a[1]), Y(a[0])], [x2, y2] = [X(b[1]), Y(b[0])];
   const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
   const dx = x2 - x1, dy = y2 - y1, len = Math.hypot(dx, dy) || 1;
   const cx = mx - dy / len * bend, cy = my + dx / len * bend;
   out += `<path d="M${x1},${y1} Q${cx},${cy} ${x2},${y2}" fill="none" stroke="var(--route)" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#a)" opacity=".75"/>`;
+  // punto a metà della curva (t = 0,5)
+  if (h) labels.push(`<text x="${(x1 + 2 * cx + x2) / 4 + ox}" y="${(y1 + 2 * cy + y2) / 4 + oy}" text-anchor="${anchor}" class="hl" font-size="10" font-weight="600" fill="var(--tag-ink)">${h}</text>`);
 }
+out += labels.join('');
 
 for (const s of stops) {
   if (s.n === 11) continue; // stesso punto della tappa 1
@@ -128,6 +134,15 @@ for (const s of stops) {
       stroke="var(--land)" stroke-width="3" paint-order="stroke">${s.name}</text></g>`;
 }
 svg.innerHTML = out;
+// sfondo a pillola dietro ogni valore delle ore, misurato sul testo
+svg.querySelectorAll('text.hl').forEach(t => {
+  const b = t.getBBox();
+  const r = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+  r.setAttribute('x', b.x - 4); r.setAttribute('y', b.y - 1);
+  r.setAttribute('width', b.width + 8); r.setAttribute('height', b.height + 2);
+  r.setAttribute('rx', 6); r.setAttribute('fill', 'var(--tag-bg)');
+  t.before(r);
+});
 
 // Lista tappe
 document.getElementById('list').innerHTML = stops.map(s => `
