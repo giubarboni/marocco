@@ -94,6 +94,21 @@ const outline = [
   [30.65,-9.85],[31.5,-9.8],[32.3,-9.3],[33.25,-8.55],[33.6,-7.7],[34.03,-6.85],[35.2,-6.2]
 ];
 
+// Contorno grossolano dell'Africa (lat, lon), in senso orario da Capo Spartel. Il tratto marocchino coincide con `outline`.
+const africa = [
+  [35.79,-5.92],[35.9,-5.35],[35.6,-4.6],[35.25,-3.93],[35.17,-2.93],[35.1,-2.2],
+  [35.7,-0.65],[36.1,0.5],[36.5,1.8],[36.77,3.06],[36.9,5.1],[37.0,6.9],[36.9,8.0],[37.25,9.85],[36.8,10.3],[37.05,11.0],
+  [35.8,10.8],[34.7,10.8],[33.9,10.1],[33.1,11.5],[32.9,13.2],[32.4,15.1],[31.2,16.6],[30.3,19.0],[31.8,20.0],[32.8,22.0],
+  [32.1,23.9],[31.6,25.1],[31.3,27.2],[31.2,29.9],[31.3,31.4],[31.25,32.3],[29.9,32.6],[28.0,33.5],[24.1,35.5],[22.0,36.9],
+  [19.6,37.2],[15.6,39.5],[12.6,43.3],[11.6,43.1],[11.8,51.3],[8.0,49.8],[2.0,45.3],[-1.7,41.5],[-4.0,39.7],[-6.8,39.3],
+  [-10.3,40.2],[-15.0,40.7],[-19.8,34.9],[-24.0,35.5],[-25.9,32.6],[-29.9,31.0],[-33.0,27.9],[-34.0,25.7],[-34.8,20.0],
+  [-33.9,18.4],[-28.6,16.5],[-26.6,15.2],[-22.9,14.5],[-18.0,11.8],[-12.4,13.7],[-8.8,13.2],[-5.9,12.2],[-0.7,8.8],[0.4,9.4],
+  [3.8,9.7],[4.3,7.0],[6.4,3.4],[5.6,-0.2],[5.2,-4.0],[4.4,-7.6],[6.3,-10.8],[8.5,-13.2],[10.0,-14.4],[11.9,-15.6],
+  [14.7,-17.5],[16.0,-16.5],[18.1,-16.0],[20.9,-17.05],[23.7,-15.95],[27.1,-13.2],[27.9,-12.9],[28.5,-11.0],[29.0,-10.5],
+  [29.38,-10.18],[29.7,-9.85],[30.65,-9.85],[31.5,-9.8],[32.3,-9.3],[33.25,-8.55],[33.6,-7.7],[34.03,-6.85],[35.2,-6.2]
+];
+const madagascar = [[-12.0,49.3],[-16.0,50.4],[-22.0,47.9],[-25.5,45.2],[-24.0,43.7],[-17.0,44.0],[-15.5,46.3]];
+
 // n = numero tappa, tipo: nat | city | coast | transit
 const stops = [
   {n:1, slug:'marrakech',  name:'Marrakech',           ll:[31.63,-8.0],   type:'city',    nights:2, drive:'',      note:'Medina, Jemaa el-Fnaa, souk. Ritiro delle auto.', lab:[0,32,'middle']},
@@ -125,11 +140,23 @@ const svg = document.getElementById('map');
 let out = `<defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
   <path d="M0,1 L9,5 L0,9 z" fill="var(--route-line)"/></marker></defs>
   <rect x="-3000" y="-3000" width="7000" height="7000" fill="var(--sea)"/>
+  <g fill="var(--land)" stroke="var(--land-edge)" stroke-width="1.5" vector-effect="non-scaling-stroke">${[africa, madagascar].map(a => `<polygon points="${a.map(P).join(' ')}" vector-effect="non-scaling-stroke"/>`).join('')}</g>
   <polygon points="${outline.map(P).join(' ')}" fill="var(--land)" stroke="var(--land-edge)" stroke-width="1.5"/>
   <g fill="var(--muted)" font-size="13" font-style="italic" opacity=".8">
     <text x="24" y="250">Oceano Atlantico</text>
     <text x="815" y="560" text-anchor="middle">Algeria</text>
   </g>`;
+
+// Grandi città fuori dal giro: solo riferimento per orientarsi, volutamente discrete.
+const refCities = [
+  { name: 'Tangeri',    ll: [35.78, -5.80], dx: 7,  anchor: 'start' },
+  { name: 'Oujda',      ll: [34.68, -1.90], dx: -7, anchor: 'end' },
+  { name: 'Rabat',      ll: [34.02, -6.84], dx: -7, anchor: 'end' },
+  { name: 'Casablanca', ll: [33.57, -7.59], dx: -7, anchor: 'end' },
+  { name: 'Agadir',     ll: [30.43, -9.60], dx: -7, anchor: 'end' }
+];
+out += `<g fill="var(--muted)" opacity=".55" font-size="10">${refCities.map(c =>
+  `<circle cx="${X(c.ll[1])}" cy="${Y(c.ll[0])}" r="2.5"/><text x="${X(c.ll[1]) + c.dx}" y="${Y(c.ll[0]) + 3.5}" text-anchor="${c.anchor}">${c.name}</text>`).join('')}</g>`;
 
 const labels = [];
 for (const [a, b, bend, h, ox = 0, oy = 4, anchor = 'middle', noArrow] of segs) {
@@ -174,8 +201,8 @@ document.getElementById('list').innerHTML = stops.map(s => `
   <div class="note">${s.note}</div></div></li>`).join('');
 
 // Mappa a schermo intero: un dito sposta, due dita zoomano (rotellina su desktop).
-// Nello schermo intero si disegna un'area più ampia (tutto il Marocco): la mappa nella pagina resta il ritaglio sul tragitto.
-const VB = [-40, -170, 1160, 1000];
+// Nello schermo intero si disegna un'area enorme (tutta l'Africa): pizzicando indietro si vede il contesto; la mappa nella pagina resta il ritaglio sul tragitto.
+const VB = [-860, -440, 7860, 9600];
 const W = VB[2], H = VB[3];
 const zoom = document.createElement('div');
 zoom.className = 'zoom'; zoom.hidden = true;
