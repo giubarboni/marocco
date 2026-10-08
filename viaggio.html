@@ -10,7 +10,7 @@
     --bg: #1c1a17; --ink: #efe9df; --muted: #a49b8f; --line: #3a352f;
     --sea: #22303a; --land: #3a3427; --land-edge: #5a5040;
     --nat: #6fb27f; --city: #e58a5a; --coast: #6aaad4; --transit: #a39c90;
-    --route: #efe9df; --tag-bg: #cbbf9f; --tag-ink: #3a3427;
+    --route: #efe9df; --route-line: color-mix(in srgb, var(--route) 75%, var(--land)); --tag-bg: var(--route-line); --tag-ink: #3a3427;
   }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.45 system-ui, sans-serif; }
@@ -25,12 +25,12 @@
   @media (max-width: 480px) { .legend { font-size: 11px; gap: 10px; padding: 5px 8px; bottom: 8px; } }
   .mapwrap svg { cursor: zoom-in; }
   .zbtn { position: absolute; top: 10px; left: 10px; border: 0; border-radius: 8px; padding: 6px 10px; font: inherit; font-size: 12px; cursor: pointer; background: color-mix(in srgb, var(--bg) 75%, transparent); color: var(--ink); }
-  .zoom { position: fixed; inset: 0; z-index: 10; overflow: hidden; background: var(--sea); touch-action: none; cursor: grab; }
+  .zoom { position: fixed; inset: 0; z-index: 10; overflow: clip; background: var(--sea); touch-action: none; cursor: grab; }
   .zoom[hidden] { display: none; }
   .zstage { position: absolute; left: 0; top: 0; width: 900px; height: 620px; transform-origin: 0 0; }
   .zstage svg { width: 900px; height: 620px; max-width: none; border: 0; border-radius: 0; cursor: grab; }
-  .zclose { position: absolute; top: 12px; right: 12px; width: 40px; height: 40px; border: 0; border-radius: 50%; font-size: 24px; line-height: 1; cursor: pointer; background: color-mix(in srgb, var(--bg) 75%, transparent); color: var(--ink); }
-  .zhint { position: absolute; top: 20px; left: 16px; right: 64px; color: var(--muted); font-size: 12px; pointer-events: none; }
+  .zclose { position: fixed; z-index: 2; top: max(12px, env(safe-area-inset-top)); right: max(12px, env(safe-area-inset-right)); width: 40px; height: 40px; border: 0; border-radius: 50%; font-size: 24px; line-height: 1; cursor: pointer; background: color-mix(in srgb, var(--bg) 75%, transparent); color: var(--ink); }
+  .zhint { position: fixed; z-index: 1; top: max(20px, env(safe-area-inset-top));  left: 16px; right: 64px; color: var(--muted); font-size: 12px; pointer-events: none; }
   .stop, [data-slug] { cursor: pointer; }
   ol li[data-slug]:hover .t { text-decoration: underline; }
   .modal { position: fixed; inset: 0; z-index: 20; display: flex; align-items: flex-end; justify-content: center; background: rgba(0, 0, 0, .6); }
@@ -123,7 +123,7 @@ const segs = [
 const color = t => `var(--${t === 'transit' ? 'transit' : t})`;
 const svg = document.getElementById('map');
 let out = `<defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-  <path d="M0,1 L9,5 L0,9 z" fill="var(--route)"/></marker></defs>
+  <path d="M0,1 L9,5 L0,9 z" fill="var(--route-line)"/></marker></defs>
   <rect x="-3000" y="-3000" width="7000" height="7000" fill="var(--sea)"/>
   <polygon points="${outline.map(P).join(' ')}" fill="var(--land)" stroke="var(--land-edge)" stroke-width="1.5"/>
   <g fill="var(--muted)" font-size="13" font-style="italic" opacity=".8">
@@ -137,7 +137,7 @@ for (const [a, b, bend, h, ox = 0, oy = 4, anchor = 'middle', noArrow] of segs) 
   const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
   const dx = x2 - x1, dy = y2 - y1, len = Math.hypot(dx, dy) || 1;
   const cx = mx - dy / len * bend, cy = my + dx / len * bend;
-  out += `<path d="M${x1},${y1} Q${cx},${cy} ${x2},${y2}" fill="none" stroke="var(--route)" stroke-width="2" stroke-dasharray="6 5" ${noArrow ? '' : 'marker-end="url(#a)"'} opacity=".75"/>`;
+  out += `<path d="M${x1},${y1} Q${cx},${cy} ${x2},${y2}" fill="none" stroke="var(--route-line)" stroke-width="2" stroke-dasharray="4 7" ${noArrow ? '' : 'marker-end="url(#a)"'}/>`;
   // punto a metà della curva (t = 0,5)
   if (h) labels.push(`<text x="${(x1 + 2 * cx + x2) / 4 + ox}" y="${(y1 + 2 * cy + y2) / 4 + oy}" text-anchor="${anchor}" class="hl" font-size="10" font-weight="600" fill="var(--tag-ink)">${h}</text>`);
 }
