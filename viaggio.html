@@ -10,7 +10,7 @@
     --bg: #1c1a17; --ink: #efe9df; --muted: #a49b8f; --line: #3a352f;
     --sea: #22303a; --land: #3a3427; --land-edge: #5a5040;
     --nat: #6fb27f; --city: #e58a5a; --coast: #6aaad4; --transit: #a39c90;
-    --route: #efe9df; --tag-bg: #4d4434; --tag-ink: #efe9df;
+    --route: #efe9df; --tag-bg: #cbbf9f; --tag-ink: #3a3427;
   }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.45 system-ui, sans-serif; }
@@ -41,7 +41,7 @@
   .sheet h2 { margin: 0; font-size: 20px; }
   .mmeta { color: var(--muted); font-size: 13px; }
   .mclose { flex: none; width: 36px; height: 36px; border: 0; border-radius: 50%; font-size: 22px; line-height: 1; cursor: pointer; background: var(--line); color: var(--ink); }
-  .mphotos { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 -16px 14px; padding: 0 16px 12px; scrollbar-width: thin; }
+  .mphotos { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding: 0 16px; margin: 0 -16px 14px; padding: 0 16px 12px; scrollbar-width: thin; }
   .mphotos figure { flex: 0 0 82%; margin: 0; scroll-snap-align: start; }
   .mphotos img { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: cover; border-radius: 10px; background: var(--line); }
   .mphotos figcaption { margin-top: 4px; font-size: 11px; line-height: 1.35; color: var(--muted); }
@@ -54,7 +54,7 @@
   ol { list-style: none; margin: 0; padding: 0; }
   li { display: grid; grid-template-columns: 22px 1fr; gap: 8px; padding: 18px 0; font-size: 12px; line-height: 1.35; border-bottom: 1px solid var(--line); }
   li:last-child { border-bottom: 0; }
-  .n { width: 22px; height: 22px; border-radius: 50%; color: var(--bg); font-weight: 700; display: grid; place-items: center; font-size: 11px; }
+  .n { width: 22px; height: 22px; border-radius: 50%; color: var(--land); font-weight: 700; display: grid; place-items: center; font-size: 11px; }
   .head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 8px; }
   .t { font-weight: 600; }
   .meta { color: var(--muted); font-size: 11px; }
@@ -124,7 +124,7 @@ const color = t => `var(--${t === 'transit' ? 'transit' : t})`;
 const svg = document.getElementById('map');
 let out = `<defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
   <path d="M0,1 L9,5 L0,9 z" fill="var(--route)"/></marker></defs>
-  <rect width="900" height="620" fill="var(--sea)"/>
+  <rect x="-3000" y="-3000" width="7000" height="7000" fill="var(--sea)"/>
   <polygon points="${outline.map(P).join(' ')}" fill="var(--land)" stroke="var(--land-edge)" stroke-width="1.5"/>
   <g fill="var(--muted)" font-size="13" font-style="italic" opacity=".8">
     <text x="24" y="250">Oceano Atlantico</text>
@@ -148,8 +148,8 @@ for (const s of stops) {
   const x = X(s.ll[1]), y = Y(s.ll[0]);
   const num = s.n === 1 ? '1·9' : s.n;
   const nts = nightsLabel(s);
-  out += `<g class="stop" data-slug="${s.slug}"><circle cx="${x}" cy="${y}" r="${s.n === 1 ? 15 : 12}" fill="${color(s.type)}" stroke="var(--bg)" stroke-width="2"/>
-    <text x="${x}" y="${y + 4}" text-anchor="middle" font-size="${s.n === 1 ? 10 : 12}" font-weight="700" fill="var(--bg)">${num}</text>
+  out += `<g class="stop" data-slug="${s.slug}"><circle cx="${x}" cy="${y}" r="${s.n === 1 ? 15 : 12}" fill="${color(s.type)}" stroke="var(--land)" stroke-width="2"/>
+    <text x="${x}" y="${y + 4}" text-anchor="middle" font-size="${s.n === 1 ? 10 : 12}" font-weight="700" fill="var(--land)">${num}</text>
     <text x="${x + s.lab[0]}" y="${y + s.lab[1]}" text-anchor="${s.lab[2]}" font-size="13" font-weight="600" fill="var(--ink)"
       stroke="var(--land)" stroke-width="3" paint-order="stroke">${s.name}</text>
     <text x="${x + s.lab[0]}" y="${y + s.lab[1] + 13}" text-anchor="${s.lab[2]}" font-size="10" fill="var(--muted)"
@@ -174,7 +174,9 @@ document.getElementById('list').innerHTML = stops.map(s => `
   <div class="note">${s.note}</div></div></li>`).join('');
 
 // Mappa a schermo intero: un dito sposta, due dita zoomano (rotellina su desktop).
-const W = 900, H = 620;
+// Nello schermo intero si disegna un'area più ampia (tutto il Marocco): la mappa nella pagina resta il ritaglio sul tragitto.
+const VB = [-40, -170, 1160, 1000];
+const W = VB[2], H = VB[3];
 const zoom = document.createElement('div');
 zoom.className = 'zoom'; zoom.hidden = true;
 zoom.innerHTML = '<div class="zstage"></div><button class="zclose" type="button" aria-label="Chiudi">×</button><div class="zhint">Pizzica per zoomare · trascina per spostare</div>';
@@ -195,11 +197,14 @@ const zoomAt = (f, cx, cy) => {
 };
 function openZoom() {
   const clone = svg.cloneNode(true); clone.removeAttribute('id');
+  clone.setAttribute('viewBox', VB.join(' ')); clone.style.width = W + 'px'; clone.style.height = H + 'px';
+  stage.style.width = W + 'px'; stage.style.height = H + 'px';
   stage.replaceChildren(clone);
   zoom.hidden = false; syncLock();
   minSc = Math.min(zoom.clientWidth / W, zoom.clientHeight / H);
   sc = Math.max(minSc, 1);  // parte a grandezza naturale (etichette leggibili), non più piccola dell'intera mappa
-  tx = (zoom.clientWidth - W * sc) / 2; ty = (zoom.clientHeight - H * sc) / 2; apply();
+  // parte centrata sul ritaglio del tragitto (centro 450,310 nel disegno)
+  tx = zoom.clientWidth / 2 - (450 - VB[0]) * sc; ty = zoom.clientHeight / 2 - (310 - VB[1]) * sc; apply();
 }
 const closeZoom = () => { zoom.hidden = true; syncLock(); };
 svg.addEventListener('click', e => { const g = e.target.closest('[data-slug]'); g ? openTappa(g.dataset.slug) : openZoom(); });
