@@ -23,6 +23,14 @@
   .legend { position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%); display: flex; flex-wrap: nowrap; justify-content: center; gap: 16px; padding: 6px 14px; border-radius: 8px; background: color-mix(in srgb, var(--bg) 75%, transparent); color: var(--ink); font-size: 13px; white-space: nowrap; }
   .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; }
   @media (max-width: 480px) { .legend { font-size: 11px; gap: 10px; padding: 5px 8px; bottom: 8px; } }
+  .mapwrap svg { cursor: zoom-in; }
+  .zbtn { position: absolute; top: 10px; left: 10px; border: 0; border-radius: 8px; padding: 6px 10px; font: inherit; font-size: 12px; cursor: pointer; background: color-mix(in srgb, var(--bg) 75%, transparent); color: var(--ink); }
+  .zoom { position: fixed; inset: 0; z-index: 10; overflow: hidden; background: var(--sea); touch-action: none; cursor: grab; }
+  .zoom[hidden] { display: none; }
+  .zstage { position: absolute; left: 0; top: 0; width: 900px; height: 620px; transform-origin: 0 0; }
+  .zstage svg { width: 900px; height: 620px; max-width: none; border: 0; border-radius: 0; cursor: grab; }
+  .zclose { position: absolute; top: 12px; right: 12px; width: 40px; height: 40px; border: 0; border-radius: 50%; font-size: 24px; line-height: 1; cursor: pointer; background: color-mix(in srgb, var(--bg) 75%, transparent); color: var(--ink); }
+  .zhint { position: absolute; top: 20px; left: 16px; right: 64px; color: var(--muted); font-size: 12px; pointer-events: none; }
   ol { list-style: none; margin: 0; padding: 0; }
   li { display: grid; grid-template-columns: 22px 1fr; gap: 8px; padding: 18px 0; font-size: 12px; line-height: 1.35; border-bottom: 1px solid var(--line); }
   li:last-child { border-bottom: 0; }
@@ -38,6 +46,7 @@
   <h1>Marocco in auto — 26 dic / 10 gen</h1>
   <div class="grid">
     <div class="mapwrap">
+      <button class="zbtn" type="button">⤢ Ingrandisci</button>
       <svg id="map" viewBox="0 0 900 620" role="img" aria-label="Mappa dell'itinerario in Marocco"></svg>
       <div class="legend">
         <span><i style="background:var(--nat)"></i>Natura</span>
@@ -142,6 +151,63 @@ document.getElementById('list').innerHTML = stops.map(s => `
   <div><div class="head"><span class="t">${s.name}</span>
   <span class="meta">${s.nights} ${s.nights === 1 ? 'notte' : 'notti'}${s.drive ? ' · guida ' + s.drive : ''}</span></div>
   <div class="note">${s.note}</div></div></li>`).join('');
+
+// Mappa a schermo intero: un dito sposta, due dita zoomano (rotellina su desktop).
+const W = 900, H = 620;
+const zoom = document.createElement('div');
+zoom.className = 'zoom'; zoom.hidden = true;
+zoom.innerHTML = '<div class="zstage"></div><button class="zclose" type="button" aria-label="Chiudi">×</button><div class="zhint">Pizzica per zoomare · trascina per spostare</div>';
+zoom.append(document.querySelector('.legend').cloneNode(true));
+document.body.append(zoom);
+const stage = zoom.querySelector('.zstage');
+let sc = 1, tx = 0, ty = 0, minSc = 1;
+
+const apply = () => {
+  const vw = zoom.clientWidth, vh = zoom.clientHeight, w = W * sc, h = H * sc;
+  tx = w <= vw ? (vw - w) / 2 : Math.min(0, Math.max(vw - w, tx));
+  ty = h <= vh ? (vh - h) / 2 : Math.min(0, Math.max(vh - h, ty));
+  stage.style.transform = `translate(${tx}px,${ty}px) scale(${sc})`;
+};
+const zoomAt = (f, cx, cy) => {
+  const n = Math.min(4, Math.max(minSc, sc * f));
+  tx = cx - (cx - tx) * (n / sc); ty = cy - (cy - ty) * (n / sc); sc = n; apply();
+};
+function openZoom() {
+  const clone = svg.cloneNode(true); clone.removeAttribute('id');
+  stage.replaceChildren(clone);
+  zoom.hidden = false; document.body.style.overflow = 'hidden';
+  minSc = Math.min(zoom.clientWidth / W, zoom.clientHeight / H);
+  sc = Math.max(minSc, 1);  // parte a grandezza naturale (etichette leggibili), non più piccola dell'intera mappa
+  tx = (zoom.clientWidth - W * sc) / 2; ty = (zoom.clientHeight - H * sc) / 2; apply();
+}
+const closeZoom = () => { zoom.hidden = true; document.body.style.overflow = ''; };
+svg.addEventListener('click', openZoom);
+document.querySelector('.zbtn').addEventListener('click', openZoom);
+zoom.querySelector('.zclose').addEventListener('click', closeZoom);
+addEventListener('keydown', e => { if (e.key === 'Escape') closeZoom(); });
+addEventListener('resize', () => { if (!zoom.hidden) { minSc = Math.min(zoom.clientWidth / W, zoom.clientHeight / H); sc = Math.max(sc, minSc); apply(); } });
+
+const ptrs = new Map();
+zoom.addEventListener('pointerdown', e => {
+  if (e.target.closest('.zclose')) return;
+  zoom.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  zoom.querySelector('.zhint').hidden = true;
+});
+zoom.addEventListener('pointermove', e => {
+  const prev = ptrs.get(e.pointerId); if (!prev) return;
+  const cur = { x: e.clientX, y: e.clientY };
+  if (ptrs.size === 1) { tx += cur.x - prev.x; ty += cur.y - prev.y; apply(); }
+  else if (ptrs.size === 2) {
+    const o = [...ptrs].find(([id]) => id !== e.pointerId)[1];
+    const d0 = Math.hypot(prev.x - o.x, prev.y - o.y), d1 = Math.hypot(cur.x - o.x, cur.y - o.y);
+    const mx = (cur.x + o.x) / 2, my = (cur.y + o.y) / 2;
+    tx += mx - (prev.x + o.x) / 2; ty += my - (prev.y + o.y) / 2;
+    d0 ? zoomAt(d1 / d0, mx, my) : apply();
+  }
+  ptrs.set(e.pointerId, cur);
+});
+['pointerup', 'pointercancel'].forEach(t => zoom.addEventListener(t, e => ptrs.delete(e.pointerId)));
+zoom.addEventListener('wheel', e => { e.preventDefault(); zoomAt(Math.exp(-e.deltaY * 0.002), e.clientX, e.clientY); }, { passive: false });
 </script>
 </body>
 </html>
