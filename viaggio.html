@@ -41,7 +41,7 @@
 </head>
 <body>
 <main>
-  <h1>Marocco in auto — 20 dic / 10 gen</h1>
+  <h1>Marocco in auto — 26 dic / 10 gen</h1>
   <div class="grid">
     <div class="mapwrap">
       <svg id="map" viewBox="0 0 900 800" role="img" aria-label="Mappa dell'itinerario in Marocco"></svg>
@@ -74,29 +74,25 @@ const outline = [
 const stops = [
   {n:1,  name:'Marrakech',           ll:[31.63,-8.0],   type:'city',    nights:2, drive:'',      note:'Medina, Jemaa el-Fnaa, souk. Ritiro del minibus.', lab:[0,28,'middle']},
   {n:2,  name:'Cascate di Ouzoud',   ll:[32.02,-6.72],  type:'nat',     nights:1, drive:'~3 h',  note:'Cascate di 110 m, sentieri e barchette.',        lab:[-12,-8,'end']},
-  {n:3,  name:'Azrou / Ifrane',      ll:[33.43,-5.22],  type:'nat',     nights:1, drive:'~4 h',  note:'Foreste di cedri e scimmie di Barberia.',        lab:[-12,4,'end']},
-  {n:4,  name:'Fès',                 ll:[34.03,-5.0],   type:'city',    nights:2, drive:'~1,5 h',note:'Medina medievale, concerie, madrase.',           lab:[-12,4,'end']},
-  {n:5,  name:'Chefchaouen + Akchour',ll:[35.17,-5.27], type:'nat',     nights:2, drive:'~4 h',  note:'Città blu e cascate di Akchour. Tagliabile.',    lab:[12,4,'start']},
-  {n:6,  name:'Midelt',              ll:[32.68,-4.74],  type:'transit', nights:1, drive:'~7 h',  note:'Solo tappa. Notte fredda, serve riscaldamento.', lab:[12,4,'start']},
-  {n:7,  name:'Merzouga',            ll:[31.10,-4.01],  type:'nat',     nights:2, drive:'~4,5 h',note:'Dune dell’Erg Chebbi, notte in campo tendato.',  lab:[12,4,'start']},
-  {n:8,  name:'Gole del Todra / Dadès',ll:[31.45,-5.75],type:'nat',     nights:2, drive:'~3 h',  note:'Pareti di 300 m, oasi, strada a tornanti.',      lab:[0,-14,'middle']},
-  {n:9,  name:'Aït Benhaddou',       ll:[31.05,-7.13],  type:'city',    nights:1, drive:'~3,5 h',note:'Ksar UNESCO di fango, set di molti film.',       lab:[0,26,'middle']},
-  {n:10, name:'Essaouira',           ll:[31.51,-9.77],  type:'coast',   nights:3, drive:'~7 h',  note:'Via Tizi n’Tichka e Marrakech. Costa e pesce.', lab:[-12,4,'end']},
-  {n:11, name:'Marrakech (rientro)', ll:[31.63,-8.0],   type:'city',    nights:1, drive:'~3 h',  note:'Cuscinetto prima del volo.',                      lab:null}
+  {n:3,  name:'Fès',                 ll:[34.03,-5.0],   type:'city',    nights:2, drive:'~5,5 h',note:'Medina medievale. Sosta ai cedri di Azrou.', lab:[-12,4,'end']},
+  {n:4,  name:'Midelt',              ll:[32.68,-4.74],  type:'transit', nights:1, drive:'~3 h',  note:'Solo tappa. Notte fredda, serve riscaldamento.', lab:[12,4,'start']},
+  {n:5,  name:'Merzouga',            ll:[31.10,-4.01],  type:'nat',     nights:2, drive:'~4,5 h',note:'Dune dell’Erg Chebbi, notte in campo tendato.',  lab:[12,4,'start']},
+  {n:6,  name:'Gole del Todra / Dadès',ll:[31.45,-5.75],type:'nat',     nights:2, drive:'~3 h',  note:'Pareti di 300 m, oasi, strada a tornanti.',      lab:[0,-14,'middle']},
+  {n:7,  name:'Aït Benhaddou',       ll:[31.05,-7.13],  type:'city',    nights:1, drive:'~3,5 h',note:'Ksar UNESCO di fango, set di molti film.',       lab:[0,26,'middle']},
+  {n:8,  name:'Essaouira',           ll:[31.51,-9.77],  type:'coast',   nights:2, drive:'~7 h',  note:'Via Tizi n’Tichka e Marrakech. Costa e pesce.', lab:[-12,4,'end']},
+  {n:9,  name:'Marrakech (rientro)', ll:[31.63,-8.0],   type:'city',    nights:1, drive:'~3 h',  note:'Cuscinetto prima del volo.',                      lab:null}
 ];
 
-// Punti di passaggio non numerati.
-const via = { fes:[34.03,-5.0], tizi:[31.3,-7.36] };
+// Punto di passaggio non numerato.
+const via = { tizi:[31.3,-7.36] };
 const at = n => stops.find(s => s.n === n).ll;
 
 // [da, a, curvatura, ore, dx, dy, ancora] — ore = etichetta sul tratto (dx/dy spostano il testo).
 const segs = [
-  [at(1), at(2), 0, '3 h'], [at(2), at(3), 0, '4 h'], [at(3), at(4), 0, '1,5 h', -10, 4, 'end'],
-  [at(4), at(5), 0, '4 h', 12, 4, 'start'],
-  [at(5), via.fes, 18, '4 h', -12, 4, 'end'], [via.fes, at(6), 0, '3 h'],
-  [at(6), at(7), 0, '4,5 h'], [at(7), at(8), 0, '3 h'], [at(8), at(9), 0, '3,5 h'],
-  [at(9), via.tizi, 0], [via.tizi, at(1), 0, '4 h', 14, 16, 'start'],
-  [at(1), at(10), 0, '3 h', 0, -8], [at(10), at(1), 22, '3 h', 0, 14]
+  [at(1), at(2), 0, '3 h'], [at(2), at(3), 0, '5,5 h'], [at(3), at(4), 0, '3 h'],
+  [at(4), at(5), 0, '4,5 h'], [at(5), at(6), 0, '3 h'], [at(6), at(7), 0, '3,5 h'],
+  [at(7), via.tizi, 0], [via.tizi, at(1), 0, '4 h', 14, 16, 'start'],
+  [at(1), at(8), 0, '3 h', 0, -8], [at(8), at(1), 22, '3 h', 0, 14]
 ];
 
 const color = t => `var(--${t === 'transit' ? 'transit' : t})`;
@@ -125,9 +121,9 @@ for (const [a, b, bend, h, ox = 0, oy = 4, anchor = 'middle'] of segs) {
 out += labels.join('');
 
 for (const s of stops) {
-  if (s.n === 11) continue; // stesso punto della tappa 1
+  if (s.n === 9) continue; // stesso punto della tappa 1
   const x = X(s.ll[1]), y = Y(s.ll[0]);
-  const num = s.n === 1 ? '1·11' : s.n;
+  const num = s.n === 1 ? '1·9' : s.n;
   out += `<g><circle cx="${x}" cy="${y}" r="${s.n === 1 ? 15 : 12}" fill="${color(s.type)}" stroke="var(--bg)" stroke-width="2"/>
     <text x="${x}" y="${y + 4}" text-anchor="middle" font-size="${s.n === 1 ? 10 : 12}" font-weight="700" fill="var(--bg)">${num}</text>
     <text x="${x + s.lab[0]}" y="${y + s.lab[1]}" text-anchor="${s.lab[2]}" font-size="13" font-weight="600" fill="var(--ink)"
