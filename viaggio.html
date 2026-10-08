@@ -31,6 +31,26 @@
   .zstage svg { width: 900px; height: 620px; max-width: none; border: 0; border-radius: 0; cursor: grab; }
   .zclose { position: absolute; top: 12px; right: 12px; width: 40px; height: 40px; border: 0; border-radius: 50%; font-size: 24px; line-height: 1; cursor: pointer; background: color-mix(in srgb, var(--bg) 75%, transparent); color: var(--ink); }
   .zhint { position: absolute; top: 20px; left: 16px; right: 64px; color: var(--muted); font-size: 12px; pointer-events: none; }
+  .stop, [data-slug] { cursor: pointer; }
+  ol li[data-slug]:hover .t { text-decoration: underline; }
+  .modal { position: fixed; inset: 0; z-index: 20; display: flex; align-items: flex-end; justify-content: center; background: rgba(0, 0, 0, .6); }
+  .modal[hidden] { display: none; }
+  .sheet { width: 100%; max-width: 560px; max-height: 88vh; max-height: 88dvh; overflow-y: auto; padding: 16px 16px 28px; background: var(--bg); color: var(--ink); border: 1px solid var(--line); border-radius: 16px 16px 0 0; }
+  @media (min-width: 700px) { .modal { align-items: center; } .sheet { border-radius: 16px; } }
+  .mhead { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+  .sheet h2 { margin: 0; font-size: 20px; }
+  .mmeta { color: var(--muted); font-size: 13px; }
+  .mclose { flex: none; width: 36px; height: 36px; border: 0; border-radius: 50%; font-size: 22px; line-height: 1; cursor: pointer; background: var(--line); color: var(--ink); }
+  .mphotos { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 -16px 14px; padding: 0 16px 12px; scrollbar-width: thin; }
+  .mphotos figure { flex: 0 0 82%; margin: 0; scroll-snap-align: start; }
+  .mphotos img { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: cover; border-radius: 10px; background: var(--line); }
+  .mphotos figcaption { margin-top: 4px; font-size: 11px; line-height: 1.35; color: var(--muted); }
+  .mphotos .mcap { color: var(--ink); font-size: 12px; }
+  .mphotos a { color: inherit; }
+  .mdesc { margin: 0 0 14px; font-size: 15px; }
+  .mlabel { margin-bottom: 6px; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .05em; }
+  .mtodo { margin: 0; padding-left: 18px; font-size: 14px; }
+  .mtodo li { display: list-item; padding: 3px 0; border: 0; font-size: 14px; cursor: default; }
   ol { list-style: none; margin: 0; padding: 0; }
   li { display: grid; grid-template-columns: 22px 1fr; gap: 8px; padding: 18px 0; font-size: 12px; line-height: 1.35; border-bottom: 1px solid var(--line); }
   li:last-child { border-bottom: 0; }
@@ -76,20 +96,21 @@ const outline = [
 
 // n = numero tappa, tipo: nat | city | coast | transit
 const stops = [
-  {n:1,  name:'Marrakech',           ll:[31.63,-8.0],   type:'city',    nights:2, drive:'',      note:'Medina, Jemaa el-Fnaa, souk. Ritiro delle auto.', lab:[0,32,'middle']},
-  {n:2,  name:'Cascate di Ouzoud',   ll:[32.02,-6.72],  type:'nat',     nights:1, drive:'~3 h',  note:'Cascate di 110 m, sentieri e barchette.',        lab:[-18,-2,'end']},
-  {n:3,  name:'Fès',                 ll:[34.03,-5.0],   type:'city',    nights:2, drive:'~5,5 h',note:'Medina medievale. Sosta ai cedri di Azrou.', lab:[-18,-2,'end']},
-  {n:4,  name:'Midelt',              ll:[32.68,-4.74],  type:'transit', nights:1, drive:'~3 h',  note:'Solo tappa. Notte fredda, serve riscaldamento.', lab:[18,-2,'start']},
-  {n:5,  name:'Merzouga',            ll:[31.10,-4.01],  type:'nat',     nights:2, drive:'~4,5 h',note:'Dune dell’Erg Chebbi, notte in campo tendato.',  lab:[18,-2,'start']},
-  {n:6,  name:'Gole del Todra / Dadès',ll:[31.45,-5.75],type:'nat',     nights:2, drive:'~3 h',  note:'Pareti di 300 m, oasi, strada a tornanti.',      lab:[0,-32,'middle']},
-  {n:7,  name:'Aït Benhaddou',       ll:[31.05,-7.13],  type:'city',    nights:1, drive:'~3,5 h',note:'Ksar UNESCO di fango, set di molti film.',       lab:[0,30,'middle']},
-  {n:8,  name:'Essaouira',           ll:[31.51,-9.77],  type:'coast',   nights:2, drive:'~7 h',  note:'Via Tizi n’Tichka e Marrakech. Costa e pesce.', lab:[-18,-2,'end']},
-  {n:9,  name:'Marrakech (rientro)', ll:[31.63,-8.0],   type:'city',    nights:1, drive:'~3 h',  note:'Cuscinetto prima del volo.',                      lab:null}
+  {n:1, slug:'marrakech',  name:'Marrakech',           ll:[31.63,-8.0],   type:'city',    nights:2, drive:'',      note:'Medina, Jemaa el-Fnaa, souk. Ritiro delle auto.', lab:[0,32,'middle']},
+  {n:2, slug:'ouzoud',  name:'Cascate di Ouzoud',   ll:[32.02,-6.72],  type:'nat',     nights:1, drive:'~3 h',  note:'Cascate di 110 m, sentieri e barchette.',        lab:[-18,-2,'end']},
+  {n:3, slug:'fes',  name:'Fès',                 ll:[34.03,-5.0],   type:'city',    nights:2, drive:'~5,5 h',note:'Medina medievale. Sosta ai cedri di Azrou.', lab:[-18,-2,'end']},
+  {n:4, slug:'midelt',  name:'Midelt',              ll:[32.68,-4.74],  type:'transit', nights:1, drive:'~3 h',  note:'Solo tappa. Notte fredda, serve riscaldamento.', lab:[18,-2,'start']},
+  {n:5, slug:'merzouga',  name:'Merzouga',            ll:[31.10,-4.01],  type:'nat',     nights:2, drive:'~4,5 h',note:'Dune dell’Erg Chebbi, notte in campo tendato.',  lab:[18,-2,'start']},
+  {n:6, slug:'todra-dades',  name:'Gole del Todra / Dadès',ll:[31.45,-5.75],type:'nat',     nights:2, drive:'~3 h',  note:'Pareti di 300 m, oasi, strada a tornanti.',      lab:[0,-32,'middle']},
+  {n:7, slug:'ait-benhaddou',  name:'Aït Benhaddou',       ll:[31.05,-7.13],  type:'city',    nights:1, drive:'~3,5 h',note:'Ksar UNESCO di fango, set di molti film.',       lab:[0,30,'middle']},
+  {n:8, slug:'essaouira',  name:'Essaouira',           ll:[31.51,-9.77],  type:'coast',   nights:2, drive:'~7 h',  note:'Via Tizi n’Tichka e Marrakech. Costa e pesce.', lab:[-18,-2,'end']},
+  {n:9, slug:'marrakech',  name:'Marrakech (rientro)', ll:[31.63,-8.0],   type:'city',    nights:1, drive:'~3 h',  note:'Cuscinetto prima del volo.',                      lab:null}
 ];
 
 // Punto di passaggio non numerato.
 const via = { tizi:[31.3,-7.36] };
 const at = n => stops.find(s => s.n === n).ll;
+const nightsLabel = s => s.n === 1 ? `${s.nights} + ${stops.find(t => t.n === 9).nights} notti` : `${s.nights} ${s.nights === 1 ? 'notte' : 'notti'}`;
 
 // [da, a, curvatura, ore, dx, dy, ancora] — ore = etichetta sul tratto (dx/dy spostano il testo).
 const segs = [
@@ -126,8 +147,8 @@ for (const s of stops) {
   if (s.n === 9) continue; // stesso punto della tappa 1
   const x = X(s.ll[1]), y = Y(s.ll[0]);
   const num = s.n === 1 ? '1·9' : s.n;
-  const nts = s.n === 1 ? `${s.nights} + ${stops.find(t => t.n === 9).nights} notti` : `${s.nights} ${s.nights === 1 ? 'notte' : 'notti'}`;
-  out += `<g><circle cx="${x}" cy="${y}" r="${s.n === 1 ? 15 : 12}" fill="${color(s.type)}" stroke="var(--bg)" stroke-width="2"/>
+  const nts = nightsLabel(s);
+  out += `<g class="stop" data-slug="${s.slug}"><circle cx="${x}" cy="${y}" r="${s.n === 1 ? 15 : 12}" fill="${color(s.type)}" stroke="var(--bg)" stroke-width="2"/>
     <text x="${x}" y="${y + 4}" text-anchor="middle" font-size="${s.n === 1 ? 10 : 12}" font-weight="700" fill="var(--bg)">${num}</text>
     <text x="${x + s.lab[0]}" y="${y + s.lab[1]}" text-anchor="${s.lab[2]}" font-size="13" font-weight="600" fill="var(--ink)"
       stroke="var(--land)" stroke-width="3" paint-order="stroke">${s.name}</text>
@@ -147,7 +168,7 @@ svg.querySelectorAll('text.hl').forEach(t => {
 
 // Lista tappe
 document.getElementById('list').innerHTML = stops.map(s => `
-  <li><span class="n" style="background:${color(s.type)}">${s.n}</span>
+  <li data-slug="${s.slug}"><span class="n" style="background:${color(s.type)}">${s.n}</span>
   <div><div class="head"><span class="t">${s.name}</span>
   <span class="meta">${s.nights} ${s.nights === 1 ? 'notte' : 'notti'}${s.drive ? ' · guida ' + s.drive : ''}</span></div>
   <div class="note">${s.note}</div></div></li>`).join('');
@@ -175,27 +196,31 @@ const zoomAt = (f, cx, cy) => {
 function openZoom() {
   const clone = svg.cloneNode(true); clone.removeAttribute('id');
   stage.replaceChildren(clone);
-  zoom.hidden = false; document.body.style.overflow = 'hidden';
+  zoom.hidden = false; syncLock();
   minSc = Math.min(zoom.clientWidth / W, zoom.clientHeight / H);
   sc = Math.max(minSc, 1);  // parte a grandezza naturale (etichette leggibili), non più piccola dell'intera mappa
   tx = (zoom.clientWidth - W * sc) / 2; ty = (zoom.clientHeight - H * sc) / 2; apply();
 }
-const closeZoom = () => { zoom.hidden = true; document.body.style.overflow = ''; };
-svg.addEventListener('click', openZoom);
+const closeZoom = () => { zoom.hidden = true; syncLock(); };
+svg.addEventListener('click', e => { const g = e.target.closest('[data-slug]'); g ? openTappa(g.dataset.slug) : openZoom(); });
+document.getElementById('list').addEventListener('click', e => { const li = e.target.closest('[data-slug]'); if (li) openTappa(li.dataset.slug); });
 document.querySelector('.zbtn').addEventListener('click', openZoom);
 zoom.querySelector('.zclose').addEventListener('click', closeZoom);
-addEventListener('keydown', e => { if (e.key === 'Escape') closeZoom(); });
+addEventListener('keydown', e => { if (e.key === 'Escape') (modal.hidden ? closeZoom() : closeTappa()); });
 addEventListener('resize', () => { if (!zoom.hidden) { minSc = Math.min(zoom.clientWidth / W, zoom.clientHeight / H); sc = Math.max(sc, minSc); apply(); } });
 
 const ptrs = new Map();
+let tap = null;
 zoom.addEventListener('pointerdown', e => {
   if (e.target.closest('.zclose')) return;
+  tap = ptrs.size ? null : { x: e.clientX, y: e.clientY, moved: false };
   zoom.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
   zoom.querySelector('.zhint').hidden = true;
 });
 zoom.addEventListener('pointermove', e => {
   const prev = ptrs.get(e.pointerId); if (!prev) return;
   const cur = { x: e.clientX, y: e.clientY };
+  if (tap && Math.hypot(cur.x - tap.x, cur.y - tap.y) > 8) tap.moved = true;
   if (ptrs.size === 1) { tx += cur.x - prev.x; ty += cur.y - prev.y; apply(); }
   else if (ptrs.size === 2) {
     const o = [...ptrs].find(([id]) => id !== e.pointerId)[1];
@@ -206,8 +231,74 @@ zoom.addEventListener('pointermove', e => {
   }
   ptrs.set(e.pointerId, cur);
 });
-['pointerup', 'pointercancel'].forEach(t => zoom.addEventListener(t, e => ptrs.delete(e.pointerId)));
+zoom.addEventListener('pointerup', e => {
+  if (tap && !tap.moved && ptrs.size === 1) {
+    const g = document.elementFromPoint(e.clientX, e.clientY)?.closest('[data-slug]');
+    if (g) openTappa(g.dataset.slug);
+  }
+  tap = null; ptrs.delete(e.pointerId);
+});
+zoom.addEventListener('pointercancel', e => { tap = null; ptrs.delete(e.pointerId); });
 zoom.addEventListener('wheel', e => { e.preventDefault(); zoomAt(Math.exp(-e.deltaY * 0.002), e.clientX, e.clientY); }, { passive: false });
+
+// Scheda della tappa: legge tappe.md (fonte dei contenuti) alla prima apertura.
+const modal = document.createElement('div');
+modal.className = 'modal'; modal.hidden = true;
+modal.innerHTML = '<div class="sheet" role="dialog" aria-modal="true"></div>';
+document.body.append(modal);
+const sheet = modal.firstChild;
+const syncLock = () => { document.body.style.overflow = (modal.hidden && zoom.hidden) ? '' : 'hidden'; };
+const closeTappa = () => { modal.hidden = true; syncLock(); };
+modal.addEventListener('click', e => { if (e.target === modal) closeTappa(); });
+
+let tappe;
+const loadTappe = () => tappe ||= fetch('tappe.md').then(r => { if (!r.ok) throw new Error(r.status); return r.text(); }).then(t => {
+  const out = {};
+  for (const b of t.split(/^## /m).slice(1)) {
+    const [head, ...rest] = b.split('\n'), body = rest.join('\n');
+    const [slug, nome] = head.split(' — ');
+    const sec = n => (body.split(new RegExp(`^### ${n}\\s*$`, 'm'))[1] || '').split(/^### /m)[0];
+    const items = x => x.split('\n').filter(l => l.startsWith('- ')).map(l => l.slice(2).trim());
+    out[slug.trim()] = {
+      nome: nome.trim(), desc: body.split(/^### /m)[0].trim(), todo: items(sec('Da fare')),
+      foto: items(sec('Foto')).map(l => { const [src, cap, cred, url] = l.split(' | '); return { src, cap, cred, url }; })
+    };
+  }
+  return out;
+});
+
+const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
+
+async function openTappa(slug) {
+  const st = stops.find(s => s.slug === slug);
+  sheet.replaceChildren();
+  const head = el('div', 'mhead'), titles = el('div');
+  titles.append(el('h2', '', st.name), el('div', 'mmeta', nightsLabel(st)));
+  const x = el('button', 'mclose', '×'); x.type = 'button'; x.setAttribute('aria-label', 'Chiudi'); x.onclick = closeTappa;
+  head.append(titles, x); sheet.append(head);
+  modal.hidden = false; syncLock(); sheet.scrollTop = 0;
+  let d;
+  try { d = (await loadTappe())[slug]; if (!d) throw new Error('assente'); }
+  catch { sheet.append(el('p', 'mdesc', 'Contenuti non disponibili: aprire la pagina online (in locale il file tappe.md non si può leggere).')); return; }
+
+  if (d.foto.length) {
+    const strip = el('div', 'mphotos');
+    for (const f of d.foto) {
+      const fig = el('figure'), img = new Image();
+      img.src = f.src; img.alt = f.cap; img.loading = 'lazy';
+      const cap = el('figcaption'); cap.append(el('span', 'mcap', f.cap), document.createElement('br'));
+      if (/^https:/.test(f.url || '')) { const a = el('a', '', f.cred); a.href = f.url; a.target = '_blank'; a.rel = 'noopener'; cap.append(a); }
+      else cap.append(f.cred || '');
+      fig.append(img, cap); strip.append(fig);
+    }
+    sheet.append(strip);
+  }
+  sheet.append(el('p', 'mdesc', d.desc));
+  if (d.todo.length) {
+    sheet.append(el('div', 'mlabel', 'Da fare'));
+    const ul = el('ul', 'mtodo'); d.todo.forEach(t => ul.append(el('li', '', t))); sheet.append(ul);
+  }
+}
 </script>
 </body>
 </html>
