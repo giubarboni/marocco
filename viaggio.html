@@ -6,18 +6,11 @@
 <title>Marocco — giro in auto</title>
 <style>
   :root {
-    --bg: #faf7f2; --ink: #2a2622; --muted: #7a7168; --line: #ddd5c8;
-    --sea: #dfeaf0; --land: #f1e9d9; --land-edge: #cdbfa5;
-    --nat: #3f7d4e; --city: #c5612f; --coast: #2f6f9a; --transit: #8a8378;
-    --route: #2a2622; --tag-bg: #6b5640; --tag-ink: #faf7f2;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #1c1a17; --ink: #efe9df; --muted: #a49b8f; --line: #3a352f;
-      --sea: #22303a; --land: #3a3427; --land-edge: #5a5040;
-      --nat: #6fb27f; --city: #e58a5a; --coast: #6aaad4; --transit: #a39c90;
-      --route: #efe9df; --tag-bg: #8a6f52; --tag-ink: #1c1a17;
-    }
+    color-scheme: dark;
+    --bg: #1c1a17; --ink: #efe9df; --muted: #a49b8f; --line: #3a352f;
+    --sea: #22303a; --land: #3a3427; --land-edge: #5a5040;
+    --nat: #6fb27f; --city: #e58a5a; --coast: #6aaad4; --transit: #a39c90;
+    --route: #efe9df; --tag-bg: #8a6f52; --tag-ink: #1c1a17;
   }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.45 system-ui, sans-serif; }
@@ -27,8 +20,9 @@
   @media (max-width: 1000px) { .grid { grid-template-columns: 1fr; } }
   svg { width: 100%; height: auto; display: block; border: 1px solid var(--line); border-radius: 10px; }
   .mapwrap { position: relative; }
-  .legend { position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%); display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 16px; padding: 6px 14px; border-radius: 8px; background: color-mix(in srgb, var(--bg) 75%, transparent); color: var(--ink); font-size: 13px; white-space: nowrap; }
+  .legend { position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%); display: flex; flex-wrap: nowrap; justify-content: center; gap: 16px; padding: 6px 14px; border-radius: 8px; background: color-mix(in srgb, var(--bg) 75%, transparent); color: var(--ink); font-size: 13px; white-space: nowrap; }
   .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; }
+  @media (max-width: 480px) { .legend { font-size: 11px; gap: 10px; padding: 5px 8px; bottom: 8px; } }
   ol { list-style: none; margin: 0; padding: 0; }
   li { display: grid; grid-template-columns: 22px 1fr; gap: 8px; padding: 18px 0; font-size: 12px; line-height: 1.35; border-bottom: 1px solid var(--line); }
   li:last-child { border-bottom: 0; }
@@ -44,7 +38,7 @@
   <h1>Marocco in auto — 26 dic / 10 gen</h1>
   <div class="grid">
     <div class="mapwrap">
-      <svg id="map" viewBox="0 0 900 800" role="img" aria-label="Mappa dell'itinerario in Marocco"></svg>
+      <svg id="map" viewBox="0 0 900 620" role="img" aria-label="Mappa dell'itinerario in Marocco"></svg>
       <div class="legend">
         <span><i style="background:var(--nat)"></i>Natura</span>
         <span><i style="background:var(--city)"></i>Città / cultura</span>
@@ -58,8 +52,9 @@
 
 <script>
 // Equirettangolare con longitudine scalata a 32°N: abbastanza per una mappa schematica.
-const X = lon => 40 + (lon + 11.2) * 0.85 * 95;
-const Y = lat => 40 + (36 - lat) * 95;
+// Zoom sul tragitto: scala 130 px/grado, origine spostata per centrare il giro (le etichette restano a dimensione fissa).
+const X = lon => -28 + (lon + 11.2) * 0.85 * 130;
+const Y = lat => -170 + (36 - lat) * 130;
 const P = ([lat, lon]) => `${X(lon).toFixed(1)},${Y(lat).toFixed(1)}`;
 
 // Contorno semplificato (lat, lon), in senso orario da Capo Spartel.
@@ -99,13 +94,11 @@ const color = t => `var(--${t === 'transit' ? 'transit' : t})`;
 const svg = document.getElementById('map');
 let out = `<defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
   <path d="M0,1 L9,5 L0,9 z" fill="var(--route)"/></marker></defs>
-  <rect width="900" height="800" fill="var(--sea)"/>
+  <rect width="900" height="620" fill="var(--sea)"/>
   <polygon points="${outline.map(P).join(' ')}" fill="var(--land)" stroke="var(--land-edge)" stroke-width="1.5"/>
   <g fill="var(--muted)" font-size="13" font-style="italic" opacity=".8">
-    <text x="${X(-10.6)}" y="${Y(33.2)}" text-anchor="middle">Oceano Atlantico</text>
-    <text x="${X(-3.7)}" y="${Y(35.75)}" text-anchor="middle">Mar Mediterraneo</text>
-    <text x="${X(-2.2)}" y="${Y(32.3)}" text-anchor="middle">Algeria</text>
-    <text x="${X(-6.3)}" y="${Y(29.3)}" text-anchor="middle">Sahara</text>
+    <text x="24" y="250">Oceano Atlantico</text>
+    <text x="815" y="560" text-anchor="middle">Algeria</text>
   </g>`;
 
 const labels = [];
