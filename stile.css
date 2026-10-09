@@ -11,19 +11,15 @@
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.45 "General Sans", system-ui, sans-serif; }
 
-/* Menu tra le pagine (aperto dal bottone ☰, in nav.js) */
-.menu-btn { flex: none; width: 40px; height: 40px; border: 0; border-radius: 50%; font-size: 18px; line-height: 1; cursor: pointer; background: var(--line); color: var(--ink); }
-.menu-ov { position: fixed; inset: 0; z-index: 30; display: flex; align-items: center; justify-content: center; background: rgba(30, 22, 10, .45); }
-.menu-ov[hidden] { display: none; }
-.menu { min-width: 240px; padding: 8px; border: 1px solid var(--line); border-radius: 16px; background: var(--bg); }
-.menu a { display: block; padding: 14px 16px; border-radius: 10px; color: var(--ink); font-size: 16px; font-weight: 600; text-decoration: none; }
-.menu a[aria-current] { background: var(--line); }
+/* Barra in alto con le icone delle sezioni (costruita in nav.js) */
+:root { --nav: calc(56px + env(safe-area-inset-top)); }
+.navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 10; height: var(--nav); display: flex; justify-content: center; align-items: center; gap: 8px; padding-top: env(safe-area-inset-top); border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--bg) 90%, transparent); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+.navbar a { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; color: var(--muted); }
+.navbar a[aria-current] { background: var(--line); color: var(--ink); }
 
 /* Pagine interne */
-.top { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; gap: 12px; padding: max(10px, env(safe-area-inset-top)) 16px 10px; border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--bg) 90%, transparent); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
-.top h1 { flex: 1; margin: 0; font-size: 18px; }
-.back { color: var(--muted); font-size: 14px; text-decoration: none; }
-.page { max-width: 720px; margin: 0 auto; padding: 16px 16px 48px; }
+.page { max-width: 720px; margin: 0 auto; padding: calc(var(--nav) + 16px) 16px 48px; }
+.ptitle { margin: 0 0 16px; font-size: 22px; }
 .mock { margin: 0 0 16px; padding: 10px 12px; border-radius: 10px; background: color-mix(in srgb, var(--city) 25%, var(--bg)); font-size: 13px; }
 .intro { margin: 0 0 16px; color: var(--muted); font-size: 14px; }
 .card { margin: 0 0 16px; padding: 16px; border: 1px solid var(--line); border-radius: 14px; background: color-mix(in srgb, var(--land) 35%, var(--bg)); }

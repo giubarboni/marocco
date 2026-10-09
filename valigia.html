@@ -16,12 +16,10 @@
 <main class="page" id="root"></main>
 <script src="nav.js"></script>
 <script>
-const root = document.getElementById('root');
 const testo = s => `${s.nome.toUpperCase()}\n${s.voci.map(v => '- ' + v).join('\n')}`;
-// Copia negli appunti (testo semplice, adatto alle note); in mancanza dell'API si ripiega su un campo di testo temporaneo.
+// Copia negli appunti (testo semplice, adatto alle note).
 async function copia(btn, t) {
-  try { await navigator.clipboard.writeText(t); }
-  catch { const a = el('textarea'); a.value = t; document.body.append(a); a.select(); document.execCommand('copy'); a.remove(); }
+  await navigator.clipboard.writeText(t);
   const l = btn.textContent; btn.textContent = 'Copiato ✓'; setTimeout(() => btn.textContent = l, 1500);
 }
 load('valigia').then(d => {
