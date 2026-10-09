@@ -96,6 +96,8 @@ Gole con pareti verticali fino a 300 m, oasi e strade a tornanti.
 - Salire la strada a tornanti della gola del Dadès
 - Cercare le "dita di scimmia", rocce modellate dall'erosione
 - Passeggiata nelle oasi di palme
+- Arrampicare sulle pareti del Todra
+- Via ferrata nella gola del Todra
 
 ### Foto
 
@@ -127,6 +129,8 @@ Città fortificata sull'Atlantico: porto di pescatori, barche blu, vento e clima
 - Pesce fresco al porto
 - Camminare sulla spiaggia, ventosa tutto l'anno
 - Botteghe di legno di tuia nella medina
+- Surf a Essaouira
+- Surf a Taghazout, a nord di Agadir: ancora meglio di Essaouira
 
 ### Foto
 
