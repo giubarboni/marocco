@@ -3,7 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><!-- la mappa va sotto la barra di stato del telefono -->
-<meta name="theme-color" content="#f6f2ea"><!-- barra di stato del telefono: colore della pagina -->
+<meta name="theme-color" id="tc" content="#eadfc6"><!-- barra di stato del browser: segue il colore della mappa in alto (aggiornato da script) -->
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icone/icona-180.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Marocco">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><!-- come app sulla Home: la pagina va sotto la barra di stato -->
 <title>Marocco — giro in auto</title>
 <link rel="stylesheet" href="stile.css">
 <style>
@@ -208,11 +214,23 @@ stage.style.width = svg.style.width = W + 'px'; stage.style.height = svg.style.h
 let sc = 1, tx = 0, ty = 0, minSc = 1;
 const calcMin = () => Math.min(zoom.clientWidth / W, zoom.clientHeight / H);
 
+// Barra di stato del browser (iPhone): prende il colore della mappa nel punto più alto, al centro, e lo segue mentre si sposta.
+const tc = document.getElementById('tc'), px = document.createElement('canvas').getContext('2d', { willReadFrequently: true });
+let tcBusy = false;
+const syncBar = () => {
+  if (!mobile.matches) { tc.content = '#f6f2ea'; return; }
+  const e = document.elementFromPoint(innerWidth / 2, 1), cs = e && getComputedStyle(e);
+  const col = !cs ? null : (e.ownerSVGElement || e instanceof SVGElement) && cs.fill !== 'none' ? cs.fill : getComputedStyle(zoom).backgroundColor;
+  px.fillStyle = '#eadfc6'; px.fillStyle = col; px.clearRect(0, 0, 1, 1); px.fillRect(0, 0, 1, 1);
+  const [r, g, b] = px.getImageData(0, 0, 1, 1).data;
+  tc.content = '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('');
+};
 const apply = () => {
   const vw = zoom.clientWidth, vh = zoom.clientHeight, w = W * sc, h = H * sc;
   tx = w <= vw ? (vw - w) / 2 : Math.min(0, Math.max(vw - w, tx));
   ty = h <= vh ? (vh - h) / 2 : Math.min(0, Math.max(vh - h, ty));
   stage.style.transform = `translate(${tx}px,${ty}px) scale(${sc})`;
+  if (!tcBusy) { tcBusy = true; requestAnimationFrame(() => { tcBusy = false; syncBar(); }); }
 };
 const zoomAt = (f, cx, cy) => {
   const n = Math.min(4, Math.max(minSc, sc * f));

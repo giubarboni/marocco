@@ -61,3 +61,8 @@ body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.45 "Gen
 .dlg li { padding: 3px 0; }
 .dlg p { margin: 8px 0 0; color: var(--muted); font-size: 13px; }
 .dlg .btn { margin-top: 16px; }
+
+/* Come app sulla Home (iPhone): la pagina va sotto la barra di stato, che ha testo bianco; una leggera sfumatura scura lo tiene leggibile */
+@media (display-mode: standalone) {
+  body::before { content: ""; position: fixed; top: 0; left: 0; right: 0; z-index: 9; height: calc(env(safe-area-inset-top) + 14px); background: linear-gradient(rgba(0, 0, 0, .35), transparent); pointer-events: none; }
+}
