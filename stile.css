@@ -27,6 +27,13 @@ body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.45 "Gen
   .page { padding-top: 24px; }
 }
 
+/* Mobile: capsula flottante sotto la barra di stato (il telefono non lascia colorarla come la navbar) */
+@media (max-width: 700px) {
+  .navbar { pointer-events: none; }
+  .navbar a { pointer-events: auto; }
+  .navbar::before { inset: 8px 46px; border-radius: 999px; clip-path: none; pointer-events: auto; }
+}
+
 /* Pagine interne */
 .page { max-width: 720px; margin: 0 auto; padding: calc(var(--nav) + 16px) 16px 48px; }
 .ptitle { margin: 0 0 16px; font-size: 22px; }
