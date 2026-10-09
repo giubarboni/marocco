@@ -9,8 +9,8 @@
 <style>
   .list { margin: 0 0 14px; padding-left: 18px; font-size: 14px; }
   .list li { padding: 3px 0; }
-  .bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: 0 0 16px; }
-  .bar .intro { margin: 0; }
+  .trow { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: 0 0 16px; }
+  .trow .ptitle { margin: 0; }
 </style>
 </head>
 <body data-page="valigia">
@@ -24,9 +24,9 @@ async function copia(btn, t) {
   const l = btn.textContent; btn.textContent = 'Copiato ✓'; setTimeout(() => btn.textContent = l, 1500);
 }
 load('valigia').then(d => {
-  const bar = el('div', 'bar'), all = el('button', 'btn', 'Copia tutto'); all.type = 'button';
+  const h = document.querySelector('.ptitle'), row = el('div', 'trow'), all = el('button', 'btn', 'Copia tutto'); all.type = 'button';
   all.onclick = () => copia(all, d.sezioni.map(testo).join('\n\n'));
-  bar.append(el('p', 'intro', d.intro), all); root.append(bar);
+  h.replaceWith(row); row.append(h, all);
   for (const s of d.sezioni) {
     const card = el('section', 'card'), head = el('div', 'chead'), b = el('button', 'btn', 'Copia'); b.type = 'button';
     b.onclick = () => copia(b, testo(s));
