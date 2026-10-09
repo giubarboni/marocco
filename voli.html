@@ -41,11 +41,11 @@ function biglietto(v, bag) {
     <div class="t-top"><div class="t-air"><img src="${v.logo}" alt=""><span>${v.numero}</span></div><div class="t-date">${v.data}</div></div>
     <div class="t-route">
       <div class="t-end"><div class="t-time">${v.da.ora}</div><div class="t-city">${v.da.citta}</div></div>
-      <div class="t-mid"><i></i>${svg(ICONE.voli[0], 22)}<i></i></div>
+      <div class="t-mid"><i></i>${iconaSvg(ICONE.voli[0], 22)}<i></i></div>
       <div class="t-end"><div class="t-time">${v.a.ora}</div><div class="t-city">${v.a.citta}</div></div>
     </div>
     <div class="t-stub"><div class="t-row">
-      <div class="t-bag">${svg(ICONE.valigia[0])}<span>×${v.bagagli}</span><button type="button" aria-label="Bagagli ammessi">${svg(INFO)}</button></div>
+      <div class="t-bag">${iconaSvg(ICONE.valigia[0])}<span>×${v.bagagli}</span><button type="button" aria-label="Bagagli ammessi">${iconaSvg(INFO)}</button></div>
       <div class="t-price">${v.prezzo}</div></div><div class="actions"></div></div>`;
   t.querySelector('.t-bag button').onclick = () => modale(bag.titolo, (() => { const ul = el('ul'); bag.voci.forEach(x => ul.append(el('li', '', x))); return ul; })(), el('p', '', bag.nota));
   const act = t.querySelector('.actions');
