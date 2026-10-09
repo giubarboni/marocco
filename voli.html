@@ -14,12 +14,12 @@
   .t-air { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; color: var(--muted); }
   .t-air img { display: block; height: 28px; }
   .t-date { font-size: 16px; font-weight: 700; }
-  .t-route { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px; padding: 18px 18px 20px; }
+  .t-route { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px; padding: 18px 18px 20px; }
   .t-end:last-child { text-align: right; }
-  .t-city { font-size: 22px; font-weight: 700; line-height: 1.15; }
-  .t-time { color: var(--muted); font-size: 15px; }
+  .t-time { font-size: 28px; font-weight: 700; line-height: 1.1; }
+  .t-city { color: var(--muted); font-size: 14px; font-weight: 600; }
   .t-mid { color: var(--muted); display: flex; align-items: center; gap: 8px; }
-  .t-mid i { width: 28px; border-top: 2px dashed currentColor; opacity: .5; }
+  .t-mid i { flex: 1; border-top: 2px solid currentColor; opacity: .35; }
   .t-mid svg { transform: rotate(90deg); }
   .t-stub { position: relative; padding: 16px 18px; }
   .t-stub::before { content: ""; position: absolute; top: 0; left: 18px; right: 18px; border-top: 2px dashed var(--line); }
@@ -39,9 +39,9 @@ function biglietto(v, bag) {
   t.innerHTML = `
     <div class="t-top"><div class="t-air"><img src="${v.logo}" alt=""><span>${v.numero}</span></div><div class="t-date">${v.data}</div></div>
     <div class="t-route">
-      <div class="t-end"><div class="t-city">${v.da.citta}</div><div class="t-time">${v.da.ora}</div></div>
+      <div class="t-end"><div class="t-time">${v.da.ora}</div><div class="t-city">${v.da.citta}</div></div>
       <div class="t-mid"><i></i>${svg(ICONE.voli[0], 22)}<i></i></div>
-      <div class="t-end"><div class="t-city">${v.a.citta}</div><div class="t-time">${v.a.ora}</div></div>
+      <div class="t-end"><div class="t-time">${v.a.ora}</div><div class="t-city">${v.a.citta}</div></div>
     </div>
     <div class="t-stub"><div class="t-row">
       <div class="t-bag">${svg(ICONE.valigia[0])}<span>×${v.bagagli}</span><button type="button" aria-label="Bagagli ammessi">${svg(INFO)}</button></div>
