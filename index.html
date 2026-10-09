@@ -4,20 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Marocco — giro in auto</title>
+<link rel="stylesheet" href="stile.css">
 <style>
-  @font-face { font-family: "General Sans"; src: url(font/GeneralSans-Variable.woff2) format("woff2"); font-weight: 200 700; font-style: normal; font-display: swap; }
-  @font-face { font-family: "General Sans"; src: url(font/GeneralSans-Italic.woff2) format("woff2"); font-weight: 400; font-style: italic; font-display: swap; }
-  :root {
-    color-scheme: light;
-    --bg: #f6f2ea; --ink: #2b2620; --muted: #6e655a; --line: #ddd4c4;
-    --sea: #bdd5e3; --land: #eadfc6; --land-edge: #b3a283;
-    --nat: #4f9d63; --city: #e0773f; --coast: #4a90c2; --transit: #9a9286; --dot-ink: #2b2620;
-    --land-africa: color-mix(in srgb, var(--land) 82%, #5a4a30); --route: #4a3d2a; --route-line: color-mix(in srgb, var(--route) 70%, var(--land)); --tag-bg: var(--route-line); --tag-ink: #f6f2ea;
-  }
-  * { box-sizing: border-box; }
   html, body { height: 100%; overflow: hidden; overscroll-behavior: none; }
-  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.45 "General Sans", system-ui, sans-serif; }
-  h1 { font-size: 18px; margin: 0; }
+  h1 { font-size: 18px; margin: 0; text-wrap: balance; }
   h1 .m { display: none; }
   .zoom { position: fixed; inset: 0; overflow: clip; background: var(--sea); touch-action: none; cursor: grab; }
   .zstage { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
@@ -26,6 +16,7 @@
   .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; }
   .panel { position: fixed; z-index: 5; top: 50%; right: 16px; transform: translateY(-50%); width: 340px; max-height: calc(100vh - 32px); max-height: calc(100dvh - 32px); display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 16px; background: color-mix(in srgb, var(--bg) 88%, transparent); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(60, 45, 20, .18); }
   .phead { flex: none; padding: 16px 16px 4px; }
+  .hrow { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
   .grab { display: none; width: 36px; height: 4px; margin: 0 auto 12px; border-radius: 2px; background: var(--muted); opacity: .5; }
   .plist { overflow-y: auto; overscroll-behavior: contain; padding: 0 16px 8px; }
   @media (max-width: 700px) {
@@ -68,7 +59,7 @@
   .note { margin-top: 2px; }
   </style>
 </head>
-<body>
+<body data-page="mappa">
 <div class="zoom"><div class="zstage"><svg id="map" viewBox="-860 -440 7860 9600" role="img" aria-label="Mappa dell'itinerario in Marocco"></svg></div></div>
 <div class="legend">
   <span><i style="background:var(--nat)"></i>Natura</span>
@@ -77,10 +68,11 @@
   <span><i style="background:var(--transit)"></i>Transito</span>
 </div>
 <aside class="panel drag">
-  <div class="phead"><div class="grab"></div><h1><span class="d">Marocco in auto — 26 dic / 10 gen</span><span class="m">Tappe</span></h1></div>
+  <div class="phead"><div class="grab"></div><div class="hrow"><h1><span class="d">Marocco in auto — 26 dic / 10 gen</span><span class="m">Tappe</span></h1><button class="menu-btn" type="button" data-menu aria-label="Menu">☰</button></div></div>
   <ol id="list" class="plist"></ol>
 </aside>
 
+<script src="nav.js"></script>
 <script>
 // Equirettangolare con longitudine scalata a 32°N: abbastanza per una mappa schematica.
 // Zoom sul tragitto: scala 130 px/grado, origine spostata per centrare il giro (le etichette restano a dimensione fissa).
@@ -233,7 +225,7 @@ const setY = (y, dragging) => { panel.classList.toggle('drag', !!dragging); pane
 const goSnap = i => { snapI = i; setY(snaps()[i]); };
 let drag = null;
 phead.addEventListener('pointerdown', e => {
-  if (!mobile.matches) return;
+  if (!mobile.matches || e.target.closest('[data-menu]')) return;
   phead.setPointerCapture(e.pointerId);
   drag = { y0: e.clientY, p0: snaps()[snapI], t: e.timeStamp, last: e.clientY, v: 0, moved: false };
 });
@@ -307,7 +299,7 @@ const closeTappa = () => { modal.hidden = true; };
 modal.addEventListener('click', e => { if (e.target === modal) closeTappa(); });
 
 let tappe;
-const loadTappe = () => tappe ||= fetch('tappe.md').then(r => { if (!r.ok) throw new Error(r.status); return r.text(); }).then(t => {
+const loadTappe = () => tappe ||= fetch('dati/tappe.md').then(r => { if (!r.ok) throw new Error(r.status); return r.text(); }).then(t => {
   const out = {};
   for (const b of t.split(/^## /m).slice(1)) {
     const [head, ...rest] = b.split('\n'), body = rest.join('\n');
@@ -322,7 +314,6 @@ const loadTappe = () => tappe ||= fetch('tappe.md').then(r => { if (!r.ok) throw
   return out;
 });
 
-const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
 
 async function openTappa(slug) {
   const st = stops.find(s => s.slug === slug);

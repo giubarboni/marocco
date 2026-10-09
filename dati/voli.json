@@ -1,0 +1,96 @@
+{
+ "mock": true,
+ "intro": "Voli non ancora prenotati: il viaggio è in valutazione. La carta d'imbarco si attiva quando viene caricata su Drive.",
+ "voci": [
+  {
+   "titolo": "Andata · Torino → Marrakech",
+   "sottotitolo": "sab 26 dic 2026",
+   "stato": "Da prenotare",
+   "campi": [
+    [
+     "Data",
+     "sab 26 dic 2026"
+    ],
+    [
+     "Orario",
+     "da definire"
+    ],
+    [
+     "Compagnia",
+     "da definire"
+    ],
+    [
+     "Volo",
+     "—"
+    ],
+    [
+     "Bagagli",
+     "da definire (un bagaglio a testa + zaino)"
+    ],
+    [
+     "Passeggeri",
+     "6"
+    ],
+    [
+     "Costo",
+     "da definire"
+    ]
+   ],
+   "bottoni": [
+    [
+     "Carta d'imbarco",
+     null
+    ],
+    [
+     "Maggiori informazioni",
+     null
+    ]
+   ]
+  },
+  {
+   "titolo": "Ritorno · Marrakech → Torino",
+   "sottotitolo": "dom 10 gen 2027",
+   "stato": "Da prenotare",
+   "campi": [
+    [
+     "Data",
+     "dom 10 gen 2027"
+    ],
+    [
+     "Orario",
+     "da definire"
+    ],
+    [
+     "Compagnia",
+     "da definire"
+    ],
+    [
+     "Volo",
+     "—"
+    ],
+    [
+     "Bagagli",
+     "da definire (un bagaglio a testa + zaino)"
+    ],
+    [
+     "Passeggeri",
+     "6"
+    ],
+    [
+     "Costo",
+     "da definire"
+    ]
+   ],
+   "bottoni": [
+    [
+     "Carta d'imbarco",
+     null
+    ],
+    [
+     "Maggiori informazioni",
+     null
+    ]
+   ]
+  }
+ ]
+}

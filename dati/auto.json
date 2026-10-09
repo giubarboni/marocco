@@ -1,0 +1,104 @@
+{
+ "mock": true,
+ "intro": "Due auto per 6 persone.",
+ "voci": [
+  {
+   "titolo": "Auto 1",
+   "sottotitolo": "SUV tipo Dacia Duster o simile · 3 persone",
+   "stato": "Da prenotare",
+   "campi": [
+    [
+     "Agenzia",
+     "da definire"
+    ],
+    [
+     "Costo",
+     "da definire (15 giorni)"
+    ],
+    [
+     "Ritiro",
+     "Aeroporto di Marrakech · sab 26 dic · ora da definire"
+    ],
+    [
+     "Riconsegna",
+     "Aeroporto di Marrakech · dom 10 gen · ora da definire"
+    ],
+    [
+     "Franchigia",
+     "importo da definire (verificare assicurazione extra)"
+    ],
+    [
+     "Cauzione",
+     "da definire"
+    ],
+    [
+     "Carburante",
+     "da definire (pieno/pieno?)"
+    ],
+    [
+     "Conducenti",
+     "da definire"
+    ],
+    [
+     "Contatto",
+     "da definire"
+    ]
+   ],
+   "bottoni": [
+    [
+     "Maggiori informazioni",
+     null
+    ]
+   ]
+  },
+  {
+   "titolo": "Auto 2",
+   "sottotitolo": "SUV tipo Dacia Duster o simile · 3 persone",
+   "stato": "Da prenotare",
+   "campi": [
+    [
+     "Agenzia",
+     "da definire"
+    ],
+    [
+     "Costo",
+     "da definire (15 giorni)"
+    ],
+    [
+     "Ritiro",
+     "Aeroporto di Marrakech · sab 26 dic · ora da definire"
+    ],
+    [
+     "Riconsegna",
+     "Aeroporto di Marrakech · dom 10 gen · ora da definire"
+    ],
+    [
+     "Franchigia",
+     "importo da definire (verificare assicurazione extra)"
+    ],
+    [
+     "Cauzione",
+     "da definire"
+    ],
+    [
+     "Carburante",
+     "da definire (pieno/pieno?)"
+    ],
+    [
+     "Conducenti",
+     "da definire"
+    ],
+    [
+     "Contatto",
+     "da definire"
+    ]
+   ],
+   "bottoni": [
+    [
+     "Maggiori informazioni",
+     null
+    ]
+   ]
+  }
+ ]
+}

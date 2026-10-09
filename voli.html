@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Voli — Marocco</title>
+<link rel="stylesheet" href="stile.css">
+</head>
+<body data-page="voli">
+<main class="page" id="root"></main>
+<script src="nav.js"></script>
+<script>
+const root = document.getElementById('root');
+load('voli').then(d => schede(root, d)).catch(() => root.append(el('p', 'intro', 'Dati non disponibili.')));
+</script>
+</body>
+</html>
