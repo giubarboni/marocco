@@ -40,7 +40,7 @@ body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.45 "Gen
 .ptitle { margin: 0 0 16px; font-size: 22px; }
 .mock { margin: 0 0 16px; padding: 10px 12px; border-radius: 10px; background: color-mix(in srgb, var(--city) 25%, var(--bg)); font-size: 13px; }
 .intro { margin: 0 0 16px; color: var(--muted); font-size: 14px; }
-.card { margin: 0 0 16px; padding: 16px; border: 1px solid var(--line); border-radius: 14px; background: color-mix(in srgb, var(--land) 35%, var(--bg)); }
+.card { margin: 0 0 16px; padding: 16px; border-radius: 14px; background: color-mix(in srgb, var(--land) 35%, var(--bg)); }
 .chead { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
 .chead h2 { margin: 0; font-size: 17px; }
 .sub { color: var(--muted); font-size: 13px; }
