@@ -16,12 +16,13 @@
   html, body { height: 100%; overflow: hidden; overscroll-behavior: none; }
   body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.45 system-ui, sans-serif; }
   h1 { font-size: 18px; margin: 0; }
+  h1 .m { display: none; }
   .zoom { position: fixed; inset: 0; overflow: clip; background: var(--sea); touch-action: none; cursor: grab; }
   .zstage { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
   .zstage svg { display: block; max-width: none; }
   .legend { position: fixed; z-index: 1; left: calc((100% - 372px) / 2); bottom: 20px; transform: translateX(-50%); display: flex; flex-wrap: nowrap; justify-content: center; gap: 16px; padding: 6px 14px; border-radius: 8px; background: color-mix(in srgb, var(--bg) 75%, transparent); color: var(--ink); font-size: 13px; white-space: nowrap; pointer-events: none; }
   .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; }
-  .panel { position: fixed; z-index: 5; top: 16px; right: 16px; width: 340px; max-height: calc(100vh - 32px); max-height: calc(100dvh - 32px); display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 16px; background: color-mix(in srgb, var(--bg) 88%, transparent); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0, 0, 0, .4); }
+  .panel { position: fixed; z-index: 5; top: 50%; right: 16px; transform: translateY(-50%); width: 340px; max-height: calc(100vh - 32px); max-height: calc(100dvh - 32px); display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 16px; background: color-mix(in srgb, var(--bg) 88%, transparent); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0, 0, 0, .4); }
   .phead { flex: none; padding: 16px 16px 4px; }
   .grab { display: none; width: 36px; height: 4px; margin: 0 auto 12px; border-radius: 2px; background: var(--muted); opacity: .5; }
   .plist { overflow-y: auto; overscroll-behavior: contain; padding: 0 16px 8px; }
@@ -30,6 +31,8 @@
     .panel.drag { transition: none; }
     .phead { padding-top: 8px; touch-action: none; cursor: grab; }
     .grab { display: block; }
+    h1 .d { display: none; }
+    h1 .m { display: inline; }
     .plist { padding-bottom: max(8px, env(safe-area-inset-bottom)); }
     .legend { left: 50%; top: max(12px, env(safe-area-inset-top)); bottom: auto; gap: 10px; padding: 5px 8px; font-size: 11px; }
   }
@@ -71,8 +74,8 @@
   <span><i style="background:var(--coast)"></i>Costa</span>
   <span><i style="background:var(--transit)"></i>Transito</span>
 </div>
-<aside class="panel">
-  <div class="phead"><div class="grab"></div><h1>Marocco in auto — 26 dic / 10 gen</h1></div>
+<aside class="panel drag">
+  <div class="phead"><div class="grab"></div><h1><span class="d">Marocco in auto — 26 dic / 10 gen</span><span class="m">Tappe</span></h1></div>
   <ol id="list" class="plist"></ol>
 </aside>
 
@@ -205,6 +208,7 @@ const zoom = document.querySelector('.zoom');
 const stage = zoom.querySelector('.zstage');
 stage.style.width = svg.style.width = W + 'px'; stage.style.height = svg.style.height = H + 'px';
 let sc = 1, tx = 0, ty = 0, minSc = 1;
+const calcMin = () => Math.min(zoom.clientWidth / W, zoom.clientHeight / H);
 
 const apply = () => {
   const vw = zoom.clientWidth, vh = zoom.clientHeight, w = W * sc, h = H * sc;
@@ -247,18 +251,18 @@ phead.addEventListener('pointercancel', () => { drag = null; goSnap(snapI); });
 
 // Inquadratura iniziale: il tragitto (circa 860×460 nel disegno, centro 470,365) centrato nella parte di schermo non coperta dal pannello.
 const fit = () => {
-  minSc = Math.min(zoom.clientWidth / W, zoom.clientHeight / H);
+  minSc = calcMin();
   const w = mobile.matches ? innerWidth : innerWidth - panel.offsetWidth - 32;
   const h = mobile.matches ? innerHeight - (panel.offsetHeight - snaps()[1]) : innerHeight;
   const top = mobile.matches ? 48 : 0; // su mobile la legenda sta in alto
   sc = Math.min(1.3, Math.max(minSc, .75, Math.min(w / 860, (h - top) / 460)));
   tx = w / 2 - (470 - VB[0]) * sc; ty = top + (h - top) / 2 - (365 - VB[1]) * sc; apply();
 };
-setY(snaps()[1], true); fit(); setTimeout(() => panel.classList.remove('drag'), 50);
+setY(snaps()[1]); fit(); setTimeout(() => panel.classList.remove('drag'), 50);
 
 document.getElementById('list').addEventListener('click', e => { const li = e.target.closest('[data-slug]'); if (li) openTappa(li.dataset.slug); });
 addEventListener('keydown', e => { if (e.key === 'Escape' && !modal.hidden) closeTappa(); });
-addEventListener('resize', () => { minSc = Math.min(zoom.clientWidth / W, zoom.clientHeight / H); sc = Math.max(sc, minSc); apply(); goSnap(snapI); });
+addEventListener('resize', () => { minSc = calcMin(); sc = Math.max(sc, minSc); apply(); goSnap(snapI); });
 
 const ptrs = new Map();
 let tap = null;
