@@ -13,24 +13,26 @@
     --land-africa: color-mix(in srgb, var(--land) 65%, black); --route: #efe9df; --route-line: color-mix(in srgb, var(--route) 62%, var(--land)); --tag-bg: var(--route-line); --tag-ink: #3a3427;
   }
   * { box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; overscroll-behavior: none; }
   body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.45 system-ui, sans-serif; }
-  main { max-width: 1280px; margin: 0 auto; padding: 24px 16px 48px; }
-  h1 { font-size: 22px; margin: 0 0 16px; }
-    .grid { display: grid; grid-template-columns: minmax(0, 900px) minmax(240px, 1fr); gap: 24px; align-items: start; }
-  @media (max-width: 1000px) { .grid { grid-template-columns: 1fr; } }
-  svg { width: 100%; height: auto; display: block; border: 1px solid var(--line); border-radius: 10px; }
-  .mapwrap { position: relative; }
-  .legend { position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%); display: flex; flex-wrap: nowrap; justify-content: center; gap: 16px; padding: 6px 14px; border-radius: 8px; background: color-mix(in srgb, var(--bg) 75%, transparent); color: var(--ink); font-size: 13px; white-space: nowrap; }
+  h1 { font-size: 18px; margin: 0; }
+  .zoom { position: fixed; inset: 0; overflow: clip; background: var(--sea); touch-action: none; cursor: grab; }
+  .zstage { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+  .zstage svg { display: block; max-width: none; }
+  .legend { position: fixed; z-index: 1; left: calc((100% - 372px) / 2); bottom: 20px; transform: translateX(-50%); display: flex; flex-wrap: nowrap; justify-content: center; gap: 16px; padding: 6px 14px; border-radius: 8px; background: color-mix(in srgb, var(--bg) 75%, transparent); color: var(--ink); font-size: 13px; white-space: nowrap; pointer-events: none; }
   .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; }
-  @media (max-width: 480px) { .legend { font-size: 11px; gap: 10px; padding: 5px 8px; bottom: 8px; } }
-  .mapwrap svg { cursor: zoom-in; }
-  .zbtn { position: absolute; top: 10px; left: 10px; border: 0; border-radius: 8px; padding: 6px 10px; font: inherit; font-size: 12px; cursor: pointer; background: color-mix(in srgb, var(--bg) 75%, transparent); color: var(--ink); }
-  .zoom { position: fixed; inset: 0; z-index: 10; overflow: clip; background: var(--sea); touch-action: none; cursor: grab; }
-  .zoom[hidden] { display: none; }
-  .zstage { position: absolute; left: 0; top: 0; width: 900px; height: 620px; transform-origin: 0 0; }
-  .zstage svg { width: 900px; height: 620px; max-width: none; border: 0; border-radius: 0; cursor: grab; }
-  .zclose { position: fixed; z-index: 2; top: max(12px, env(safe-area-inset-top)); right: max(12px, env(safe-area-inset-right)); width: 40px; height: 40px; border: 0; border-radius: 50%; font-size: 24px; line-height: 1; cursor: pointer; background: color-mix(in srgb, var(--bg) 75%, transparent); color: var(--ink); }
-  .zhint { position: fixed; z-index: 1; top: max(20px, env(safe-area-inset-top));  left: 16px; right: 64px; color: var(--muted); font-size: 12px; pointer-events: none; }
+  .panel { position: fixed; z-index: 5; top: 16px; right: 16px; width: 340px; max-height: calc(100vh - 32px); max-height: calc(100dvh - 32px); display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 16px; background: color-mix(in srgb, var(--bg) 88%, transparent); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0, 0, 0, .4); }
+  .phead { flex: none; padding: 16px 16px 4px; }
+  .grab { display: none; width: 36px; height: 4px; margin: 0 auto 12px; border-radius: 2px; background: var(--muted); opacity: .5; }
+  .plist { overflow-y: auto; overscroll-behavior: contain; padding: 0 16px 8px; }
+  @media (max-width: 700px) {
+    .panel { top: auto; left: 0; right: 0; bottom: 0; width: auto; height: 88vh; height: 88dvh; max-height: none; border-width: 1px 0 0; border-radius: 16px 16px 0 0; transform: translateY(var(--y, 60%)); transition: transform .25s ease; }
+    .panel.drag { transition: none; }
+    .phead { padding-top: 8px; touch-action: none; cursor: grab; }
+    .grab { display: block; }
+    .plist { padding-bottom: max(8px, env(safe-area-inset-bottom)); }
+    .legend { left: 50%; top: max(12px, env(safe-area-inset-top)); bottom: auto; gap: 10px; padding: 5px 8px; font-size: 11px; }
+  }
   .stop, [data-slug] { cursor: pointer; }
   ol li[data-slug]:hover .t { text-decoration: underline; }
   .modal { position: fixed; inset: 0; z-index: 20; display: flex; align-items: flex-end; justify-content: center; background: rgba(0, 0, 0, .6); }
@@ -62,22 +64,17 @@
   </style>
 </head>
 <body>
-<main>
-  <h1>Marocco in auto — 26 dic / 10 gen</h1>
-  <div class="grid">
-    <div class="mapwrap">
-      <button class="zbtn" type="button">⤢ Ingrandisci</button>
-      <svg id="map" viewBox="0 0 900 620" role="img" aria-label="Mappa dell'itinerario in Marocco"></svg>
-      <div class="legend">
-        <span><i style="background:var(--nat)"></i>Natura</span>
-        <span><i style="background:var(--city)"></i>Città / cultura</span>
-        <span><i style="background:var(--coast)"></i>Costa</span>
-        <span><i style="background:var(--transit)"></i>Transito</span>
-      </div>
-    </div>
-    <ol id="list"></ol>
-  </div>
-</main>
+<div class="zoom"><div class="zstage"><svg id="map" viewBox="-860 -440 7860 9600" role="img" aria-label="Mappa dell'itinerario in Marocco"></svg></div></div>
+<div class="legend">
+  <span><i style="background:var(--nat)"></i>Natura</span>
+  <span><i style="background:var(--city)"></i>Città / cultura</span>
+  <span><i style="background:var(--coast)"></i>Costa</span>
+  <span><i style="background:var(--transit)"></i>Transito</span>
+</div>
+<aside class="panel">
+  <div class="phead"><div class="grab"></div><h1>Marocco in auto — 26 dic / 10 gen</h1></div>
+  <ol id="list" class="plist"></ol>
+</aside>
 
 <script>
 // Equirettangolare con longitudine scalata a 32°N: abbastanza per una mappa schematica.
@@ -200,16 +197,13 @@ document.getElementById('list').innerHTML = stops.map(s => `
   <span class="meta">${s.nights} ${s.nights === 1 ? 'notte' : 'notti'}${s.drive ? ' · guida ' + s.drive : ''}</span></div>
   <div class="note">${s.note}</div></div></li>`).join('');
 
-// Mappa a schermo intero: un dito sposta, due dita zoomano (rotellina su desktop).
-// Nello schermo intero si disegna un'area enorme (tutta l'Africa): pizzicando indietro si vede il contesto; la mappa nella pagina resta il ritaglio sul tragitto.
+// Mappa sempre a tutto schermo: un dito sposta, due dita zoomano (rotellina su desktop).
+// Si disegna tutta l'Africa: pizzicando indietro si vede il contesto; all'avvio si inquadra il tragitto.
 const VB = [-860, -440, 7860, 9600];
 const W = VB[2], H = VB[3];
-const zoom = document.createElement('div');
-zoom.className = 'zoom'; zoom.hidden = true;
-zoom.innerHTML = '<div class="zstage"></div><button class="zclose" type="button" aria-label="Chiudi">×</button><div class="zhint">Pizzica per zoomare · trascina per spostare</div>';
-zoom.append(document.querySelector('.legend').cloneNode(true));
-document.body.append(zoom);
+const zoom = document.querySelector('.zoom');
 const stage = zoom.querySelector('.zstage');
+stage.style.width = svg.style.width = W + 'px'; stage.style.height = svg.style.height = H + 'px';
 let sc = 1, tx = 0, ty = 0, minSc = 1;
 
 const apply = () => {
@@ -222,32 +216,55 @@ const zoomAt = (f, cx, cy) => {
   const n = Math.min(4, Math.max(minSc, sc * f));
   tx = cx - (cx - tx) * (n / sc); ty = cy - (cy - ty) * (n / sc); sc = n; apply();
 };
-function openZoom() {
-  const clone = svg.cloneNode(true); clone.removeAttribute('id');
-  clone.setAttribute('viewBox', VB.join(' ')); clone.style.width = W + 'px'; clone.style.height = H + 'px';
-  stage.style.width = W + 'px'; stage.style.height = H + 'px';
-  stage.replaceChildren(clone);
-  zoom.hidden = false; syncLock();
+
+// Pannello tappe: su desktop è un riquadro flottante; su mobile è un bottom sheet con tre posizioni (chiuso, metà, aperto).
+const panel = document.querySelector('.panel'), phead = panel.querySelector('.phead');
+const mobile = matchMedia('(max-width: 700px)');
+const snaps = () => [panel.offsetHeight - phead.offsetHeight - 8, panel.offsetHeight - innerHeight * .42, 0]; // translateY di ogni posizione
+let snapI = 1;
+const setY = (y, dragging) => { panel.classList.toggle('drag', !!dragging); panel.style.setProperty('--y', y + 'px'); };
+const goSnap = i => { snapI = i; setY(snaps()[i]); };
+let drag = null;
+phead.addEventListener('pointerdown', e => {
+  if (!mobile.matches) return;
+  phead.setPointerCapture(e.pointerId);
+  drag = { y0: e.clientY, p0: snaps()[snapI], t: e.timeStamp, last: e.clientY, v: 0, moved: false };
+});
+phead.addEventListener('pointermove', e => {
+  if (!drag) return;
+  if (Math.abs(e.clientY - drag.y0) > 6) drag.moved = true;
+  drag.v = (e.clientY - drag.last) / Math.max(1, e.timeStamp - drag.t); drag.last = e.clientY; drag.t = e.timeStamp;
+  const s = snaps();
+  if (drag.moved) setY(Math.min(s[0], Math.max(s[2], drag.p0 + e.clientY - drag.y0)), true);
+});
+phead.addEventListener('pointerup', e => {
+  if (!drag) return;
+  const s = snaps(), y = drag.p0 + e.clientY - drag.y0 + drag.v * 150; // proietta con la velocità: un colpo di dito vale più di uno spostamento lento
+  goSnap(drag.moved ? s.reduce((b, v, i) => Math.abs(v - y) < Math.abs(s[b] - y) ? i : b, 0) : (snapI === 0 ? 1 : 0));
+  drag = null;
+});
+phead.addEventListener('pointercancel', () => { drag = null; goSnap(snapI); });
+
+// Inquadratura iniziale: il tragitto (circa 860×460 nel disegno, centro 470,365) centrato nella parte di schermo non coperta dal pannello.
+const fit = () => {
   minSc = Math.min(zoom.clientWidth / W, zoom.clientHeight / H);
-  sc = Math.max(minSc, 1);  // parte a grandezza naturale (etichette leggibili), non più piccola dell'intera mappa
-  // parte centrata sul ritaglio del tragitto (centro 450,310 nel disegno)
-  tx = zoom.clientWidth / 2 - (450 - VB[0]) * sc; ty = zoom.clientHeight / 2 - (310 - VB[1]) * sc; apply();
-}
-const closeZoom = () => { zoom.hidden = true; syncLock(); };
-svg.addEventListener('click', e => { const g = e.target.closest('[data-slug]'); g ? openTappa(g.dataset.slug) : openZoom(); });
+  const w = mobile.matches ? innerWidth : innerWidth - panel.offsetWidth - 32;
+  const h = mobile.matches ? innerHeight - (panel.offsetHeight - snaps()[1]) : innerHeight;
+  const top = mobile.matches ? 48 : 0; // su mobile la legenda sta in alto
+  sc = Math.min(1.3, Math.max(minSc, .75, Math.min(w / 860, (h - top) / 460)));
+  tx = w / 2 - (470 - VB[0]) * sc; ty = top + (h - top) / 2 - (365 - VB[1]) * sc; apply();
+};
+setY(snaps()[1], true); fit(); setTimeout(() => panel.classList.remove('drag'), 50);
+
 document.getElementById('list').addEventListener('click', e => { const li = e.target.closest('[data-slug]'); if (li) openTappa(li.dataset.slug); });
-document.querySelector('.zbtn').addEventListener('click', openZoom);
-zoom.querySelector('.zclose').addEventListener('click', closeZoom);
-addEventListener('keydown', e => { if (e.key === 'Escape') (modal.hidden ? closeZoom() : closeTappa()); });
-addEventListener('resize', () => { if (!zoom.hidden) { minSc = Math.min(zoom.clientWidth / W, zoom.clientHeight / H); sc = Math.max(sc, minSc); apply(); } });
+addEventListener('keydown', e => { if (e.key === 'Escape' && !modal.hidden) closeTappa(); });
+addEventListener('resize', () => { minSc = Math.min(zoom.clientWidth / W, zoom.clientHeight / H); sc = Math.max(sc, minSc); apply(); goSnap(snapI); });
 
 const ptrs = new Map();
 let tap = null;
 zoom.addEventListener('pointerdown', e => {
-  if (e.target.closest('.zclose')) return;
   tap = ptrs.size ? null : { x: e.clientX, y: e.clientY, moved: false };
   zoom.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
-  zoom.querySelector('.zhint').hidden = true;
 });
 zoom.addEventListener('pointermove', e => {
   const prev = ptrs.get(e.pointerId); if (!prev) return;
@@ -279,8 +296,7 @@ modal.className = 'modal'; modal.hidden = true;
 modal.innerHTML = '<div class="sheet" role="dialog" aria-modal="true"></div>';
 document.body.append(modal);
 const sheet = modal.firstChild;
-const syncLock = () => { document.body.style.overflow = (modal.hidden && zoom.hidden) ? '' : 'hidden'; };
-const closeTappa = () => { modal.hidden = true; syncLock(); };
+const closeTappa = () => { modal.hidden = true; };
 modal.addEventListener('click', e => { if (e.target === modal) closeTappa(); });
 
 let tappe;
@@ -308,7 +324,7 @@ async function openTappa(slug) {
   titles.append(el('h2', '', st.name), el('div', 'mmeta', nightsLabel(st)));
   const x = el('button', 'mclose', '×'); x.type = 'button'; x.setAttribute('aria-label', 'Chiudi'); x.onclick = closeTappa;
   head.append(titles, x); sheet.append(head);
-  modal.hidden = false; syncLock(); sheet.scrollTop = 0;
+  modal.hidden = false; sheet.scrollTop = 0;
   let d;
   try { d = (await loadTappe())[slug]; if (!d) throw new Error('assente'); }
   catch { sheet.append(el('p', 'mdesc', 'Contenuti non disponibili: aprire la pagina online (in locale il file tappe.md non si può leggere).')); return; }
