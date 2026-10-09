@@ -5,9 +5,64 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Voli — Marocco</title>
 <link rel="stylesheet" href="stile.css">
+<style>
+  /* Biglietto: parte alta con compagnia, data, tratta; sotto, dopo la linea tratteggiata con le due tacche, bagagli, prezzo e bottoni. */
+  .ticket { --cy: 70%; position: relative; margin: 0 0 20px; border: 1px solid var(--line); border-radius: 18px; background: color-mix(in srgb, var(--land) 35%, var(--bg));
+    -webkit-mask: radial-gradient(circle 11px at 0 var(--cy), #0000 98%, #000) left / 51% 100% no-repeat, radial-gradient(circle 11px at 100% var(--cy), #0000 98%, #000) right / 51% 100% no-repeat;
+    mask: radial-gradient(circle 11px at 0 var(--cy), #0000 98%, #000) left / 51% 100% no-repeat, radial-gradient(circle 11px at 100% var(--cy), #0000 98%, #000) right / 51% 100% no-repeat; }
+  .t-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 18px 0; }
+  .t-air { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; color: var(--muted); }
+  .t-air img { display: block; height: 28px; }
+  .t-date { font-size: 16px; font-weight: 700; }
+  .t-route { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px; padding: 18px 18px 20px; }
+  .t-end:last-child { text-align: right; }
+  .t-city { font-size: 22px; font-weight: 700; line-height: 1.15; }
+  .t-time { color: var(--muted); font-size: 15px; }
+  .t-mid { color: var(--muted); display: flex; align-items: center; gap: 8px; }
+  .t-mid i { width: 28px; border-top: 2px dashed currentColor; opacity: .5; }
+  .t-mid svg { transform: rotate(90deg); }
+  .t-stub { position: relative; padding: 16px 18px; }
+  .t-stub::before { content: ""; position: absolute; top: 0; left: 18px; right: 18px; border-top: 2px dashed var(--line); }
+  .t-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .t-bag { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 15px; font-weight: 600; }
+  .t-bag button { display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 0; border-radius: 50%; background: none; color: var(--muted); cursor: pointer; }
+  .t-stub .btn { padding: 9px 12px; font-size: 13px; }
+  .t-price { font-size: 18px; font-weight: 700; }
+</style>
 </head>
 <body data-page="voli">
-<main class="page" id="root" data-dati="voli"></main>
+<main class="page" id="root"></main>
 <script src="nav.js"></script>
+<script>
+function biglietto(v, bag) {
+  const t = el('section', 'ticket');
+  t.innerHTML = `
+    <div class="t-top"><div class="t-air"><img src="${v.logo}" alt=""><span>${v.numero}</span></div><div class="t-date">${v.data}</div></div>
+    <div class="t-route">
+      <div class="t-end"><div class="t-city">${v.da.citta}</div><div class="t-time">${v.da.ora}</div></div>
+      <div class="t-mid"><i></i>${svg(ICONE.voli[0], 22)}<i></i></div>
+      <div class="t-end"><div class="t-city">${v.a.citta}</div><div class="t-time">${v.a.ora}</div></div>
+    </div>
+    <div class="t-stub"><div class="t-row">
+      <div class="t-bag">${svg(ICONE.valigia[0])}<span>×${v.bagagli}</span><button type="button" aria-label="Bagagli ammessi">${svg(INFO)}</button></div>
+      <div class="t-price">${v.prezzo}</div></div><div class="actions"></div></div>`;
+  t.querySelector('.t-bag button').onclick = () => modale(bag.titolo, (() => { const ul = el('ul'); bag.voci.forEach(x => ul.append(el('li', '', x))); return ul; })(), el('p', '', bag.nota));
+  const act = t.querySelector('.actions');
+  for (const [l, u] of v.bottoni) {
+    const b = u ? el('a', 'btn', l) : el('button', 'btn', l);
+    if (u) { b.href = u; b.target = '_blank'; b.rel = 'noopener'; } else { b.type = 'button'; b.disabled = true; b.title = 'Non ancora disponibile'; }
+    act.append(b);
+  }
+  return t;
+}
+// la tacca sta sulla linea tratteggiata, all'inizio della parte bassa: si ricalcola se cambia la larghezza
+const tacche = () => document.querySelectorAll('.ticket').forEach(t => t.style.setProperty('--cy', t.querySelector('.t-stub').offsetTop + 'px'));
+load('voli').then(d => {
+  if (d.mock) root.append(el('p', 'mock', 'Dati di esempio: da sostituire con quelli reali.'));
+  if (d.intro) root.append(el('p', 'intro', d.intro));
+  d.voli.forEach(v => root.append(biglietto(v, d.bagagli)));
+  tacche(); addEventListener('resize', tacche);
+}).catch(() => root.append(el('p', 'intro', 'Dati non disponibili.')));
+</script>
 </body>
 </html>

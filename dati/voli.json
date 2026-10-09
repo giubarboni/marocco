@@ -1,41 +1,30 @@
 {
  "mock": true,
- "intro": "Voli non ancora prenotati: il viaggio è in valutazione. La carta d'imbarco si attiva quando viene caricata su Drive.",
- "voci": [
+ "intro": "Voli non ancora prenotati: il viaggio è in valutazione. Valori segnaposto.",
+ "bagagli": {
+  "titolo": "Bagagli ammessi",
+  "voci": [
+   "Zaino sotto il sedile: 00 × 00 × 00 cm",
+   "Bagaglio a mano (trolley): 00 kg",
+   "Bagaglio da stiva: 00 kg"
+  ],
+  "nota": "Valori segnaposto: dipendono dalla compagnia e dalla tariffa scelta."
+ },
+ "voli": [
   {
-   "titolo": "Andata · Torino → Marrakech",
-   "sottotitolo": "sab 26 dic 2026",
-   "stato": "Da prenotare",
-   "campi": [
-    [
-     "Data",
-     "sab 26 dic 2026"
-    ],
-    [
-     "Orario",
-     "da definire"
-    ],
-    [
-     "Compagnia",
-     "da definire"
-    ],
-    [
-     "Volo",
-     "—"
-    ],
-    [
-     "Bagagli",
-     "da definire (un bagaglio a testa + zaino)"
-    ],
-    [
-     "Passeggeri",
-     "6"
-    ],
-    [
-     "Costo",
-     "da definire"
-    ]
-   ],
+   "logo": "loghi/placeholder.svg",
+   "numero": "XX 0000",
+   "data": "32 dic",
+   "da": {
+    "citta": "Torino",
+    "ora": "00:00"
+   },
+   "a": {
+    "citta": "Marrakech",
+    "ora": "00:00"
+   },
+   "bagagli": 0,
+   "prezzo": "00 €",
    "bottoni": [
     [
      "Carta d'imbarco",
@@ -48,39 +37,19 @@
    ]
   },
   {
-   "titolo": "Ritorno · Marrakech → Torino",
-   "sottotitolo": "dom 10 gen 2027",
-   "stato": "Da prenotare",
-   "campi": [
-    [
-     "Data",
-     "dom 10 gen 2027"
-    ],
-    [
-     "Orario",
-     "da definire"
-    ],
-    [
-     "Compagnia",
-     "da definire"
-    ],
-    [
-     "Volo",
-     "—"
-    ],
-    [
-     "Bagagli",
-     "da definire (un bagaglio a testa + zaino)"
-    ],
-    [
-     "Passeggeri",
-     "6"
-    ],
-    [
-     "Costo",
-     "da definire"
-    ]
-   ],
+   "logo": "loghi/placeholder.svg",
+   "numero": "XX 0000",
+   "data": "32 gen",
+   "da": {
+    "citta": "Marrakech",
+    "ora": "00:00"
+   },
+   "a": {
+    "citta": "Torino",
+    "ora": "00:00"
+   },
+   "bagagli": 0,
+   "prezzo": "00 €",
    "bottoni": [
     [
      "Carta d'imbarco",
