@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Marocco — giro in auto</title>
 <style>
+  @font-face { font-family: "General Sans"; src: url(font/GeneralSans-Variable.woff2) format("woff2"); font-weight: 200 700; font-style: normal; font-display: swap; }
+  @font-face { font-family: "General Sans"; src: url(font/GeneralSans-Italic.woff2) format("woff2"); font-weight: 400; font-style: italic; font-display: swap; }
   :root {
     color-scheme: dark;
     --bg: #1c1a17; --ink: #efe9df; --muted: #a49b8f; --line: #3a352f;
@@ -14,7 +16,7 @@
   }
   * { box-sizing: border-box; }
   html, body { height: 100%; overflow: hidden; overscroll-behavior: none; }
-  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.45 system-ui, sans-serif; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.45 "General Sans", system-ui, sans-serif; }
   h1 { font-size: 18px; margin: 0; }
   h1 .m { display: none; }
   .zoom { position: fixed; inset: 0; overflow: clip; background: var(--sea); touch-action: none; cursor: grab; }
@@ -184,14 +186,15 @@ for (const s of stops) {
 }
 svg.innerHTML = out;
 // sfondo a pillola dietro ogni valore delle ore, misurato sul testo
-svg.querySelectorAll('text.hl').forEach(t => {
+// (dopo il caricamento del font, altrimenti le pillole sono misurate col carattere di ripiego)
+document.fonts.load('600 10px "General Sans"').then(() => svg.querySelectorAll('text.hl').forEach(t => {
   const b = t.getBBox();
   const r = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
   r.setAttribute('x', b.x - 4); r.setAttribute('y', b.y - 1);
   r.setAttribute('width', b.width + 8); r.setAttribute('height', b.height + 2);
   r.setAttribute('rx', 6); r.setAttribute('fill', 'var(--tag-bg)');
   t.before(r);
-});
+}));
 
 // Lista tappe
 document.getElementById('list').innerHTML = stops.map(s => `
