@@ -8,11 +8,11 @@
   @font-face { font-family: "General Sans"; src: url(font/GeneralSans-Variable.woff2) format("woff2"); font-weight: 200 700; font-style: normal; font-display: swap; }
   @font-face { font-family: "General Sans"; src: url(font/GeneralSans-Italic.woff2) format("woff2"); font-weight: 400; font-style: italic; font-display: swap; }
   :root {
-    color-scheme: dark;
-    --bg: #1c1a17; --ink: #efe9df; --muted: #a49b8f; --line: #3a352f;
-    --sea: #22303a; --land: #3a3427; --land-edge: #5a5040;
-    --nat: #6fb27f; --city: #e58a5a; --coast: #6aaad4; --transit: #a39c90;
-    --land-africa: color-mix(in srgb, var(--land) 65%, black); --route: #efe9df; --route-line: color-mix(in srgb, var(--route) 62%, var(--land)); --tag-bg: var(--route-line); --tag-ink: #3a3427;
+    color-scheme: light;
+    --bg: #f6f2ea; --ink: #2b2620; --muted: #6e655a; --line: #ddd4c4;
+    --sea: #bdd5e3; --land: #eadfc6; --land-edge: #b3a283;
+    --nat: #4f9d63; --city: #e0773f; --coast: #4a90c2; --transit: #9a9286; --dot-ink: #2b2620;
+    --land-africa: color-mix(in srgb, var(--land) 82%, #5a4a30); --route: #4a3d2a; --route-line: color-mix(in srgb, var(--route) 70%, var(--land)); --tag-bg: var(--route-line); --tag-ink: #f6f2ea;
   }
   * { box-sizing: border-box; }
   html, body { height: 100%; overflow: hidden; overscroll-behavior: none; }
@@ -24,7 +24,7 @@
   .zstage svg { display: block; max-width: none; }
   .legend { position: fixed; z-index: 1; left: calc((100% - 372px) / 2); bottom: 20px; transform: translateX(-50%); display: flex; flex-wrap: nowrap; justify-content: center; gap: 16px; padding: 6px 14px; border-radius: 8px; background: color-mix(in srgb, var(--bg) 75%, transparent); color: var(--ink); font-size: 13px; white-space: nowrap; pointer-events: none; }
   .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; }
-  .panel { position: fixed; z-index: 5; top: 50%; right: 16px; transform: translateY(-50%); width: 340px; max-height: calc(100vh - 32px); max-height: calc(100dvh - 32px); display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 16px; background: color-mix(in srgb, var(--bg) 88%, transparent); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0, 0, 0, .4); }
+  .panel { position: fixed; z-index: 5; top: 50%; right: 16px; transform: translateY(-50%); width: 340px; max-height: calc(100vh - 32px); max-height: calc(100dvh - 32px); display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 16px; background: color-mix(in srgb, var(--bg) 88%, transparent); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(60, 45, 20, .18); }
   .phead { flex: none; padding: 16px 16px 4px; }
   .grab { display: none; width: 36px; height: 4px; margin: 0 auto 12px; border-radius: 2px; background: var(--muted); opacity: .5; }
   .plist { overflow-y: auto; overscroll-behavior: contain; padding: 0 16px 8px; }
@@ -40,7 +40,7 @@
   }
   .stop, [data-slug] { cursor: pointer; }
   ol li[data-slug]:hover .t { text-decoration: underline; }
-  .modal { position: fixed; inset: 0; z-index: 20; display: flex; align-items: flex-end; justify-content: center; background: rgba(0, 0, 0, .6); }
+  .modal { position: fixed; inset: 0; z-index: 20; display: flex; align-items: flex-end; justify-content: center; background: rgba(30, 22, 10, .45); }
   .modal[hidden] { display: none; }
   .sheet { width: 100%; max-width: 560px; max-height: 88vh; max-height: 88dvh; overflow-y: auto; padding: 16px 16px 28px; background: var(--bg); color: var(--ink); border: 1px solid var(--line); border-radius: 16px 16px 0 0; }
   @media (min-width: 700px) { .modal { align-items: center; } .sheet { border-radius: 16px; } }
@@ -61,7 +61,7 @@
   ol { list-style: none; margin: 0; padding: 0; }
   li { display: grid; grid-template-columns: 22px 1fr; gap: 8px; padding: 18px 0; font-size: 12px; line-height: 1.35; border-bottom: 1px solid var(--line); }
   li:last-child { border-bottom: 0; }
-  .n { width: 22px; height: 22px; border-radius: 50%; color: var(--land); font-weight: 700; display: grid; place-items: center; font-size: 11px; }
+  .n { width: 22px; height: 22px; border-radius: 50%; color: var(--dot-ink); font-weight: 700; display: grid; place-items: center; font-size: 11px; }
   .head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 8px; }
   .t { font-weight: 600; }
   .meta { color: var(--muted); font-size: 11px; }
@@ -178,7 +178,7 @@ for (const s of stops) {
   const num = s.n === 1 ? '1·9' : s.n;
   const nts = nightsLabel(s);
   out += `<g class="stop" data-slug="${s.slug}"><circle cx="${x}" cy="${y}" r="${s.n === 1 ? 15 : 12}" fill="${color(s.type)}" stroke="var(--land)" stroke-width="2"/>
-    <text x="${x}" y="${y + 4}" text-anchor="middle" font-size="${s.n === 1 ? 10 : 12}" font-weight="700" fill="var(--land)">${num}</text>
+    <text x="${x}" y="${y + 4}" text-anchor="middle" font-size="${s.n === 1 ? 10 : 12}" font-weight="700" fill="var(--dot-ink)">${num}</text>
     <text x="${x + s.lab[0]}" y="${y + s.lab[1]}" text-anchor="${s.lab[2]}" font-size="13" font-weight="600" fill="var(--ink)"
       stroke="var(--land)" stroke-width="3" paint-order="stroke">${s.name}</text>
     <text x="${x + s.lab[0]}" y="${y + s.lab[1] + 13}" text-anchor="${s.lab[2]}" font-size="10" fill="var(--muted)"
