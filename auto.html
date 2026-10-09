@@ -11,7 +11,10 @@
   .cars { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   @media (max-width: 700px) { .cars { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 -16px; padding: 0 16px 12px; scroll-padding: 0 16px; } .car { flex: 0 0 82%; scroll-snap-align: start; } }
   .car { display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--line); border-radius: 18px; background: color-mix(in srgb, var(--land) 35%, var(--bg)); }
-  .car-photo { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: contain; padding: 20px 16px 8px; background: var(--line); }
+  /* L'auto sta sullo sfondo della card; sotto ha un'ombra: ellisse nera, piena al centro e trasparente ai bordi, al 50%. */
+  .car-img { position: relative; padding: 32px 20px 20px; }
+  .car-img::before { content: ""; position: absolute; left: 6%; right: 6%; bottom: 0; height: 40px; border-radius: 50%; background: radial-gradient(closest-side, #000, transparent); opacity: .5; }
+  .car-photo { position: relative; display: block; width: 100%; height: auto; }
   .car-body { display: flex; flex: 1; flex-direction: column; gap: 14px; padding: 16px; }
   .car h2 { margin: 0; font-size: 20px; letter-spacing: .01em; }
   .chips { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -43,7 +46,7 @@ const sv = (d, s = 16) => iconaSvg(d, s);
 function auto(a) {
   const c = el('article', 'car');
   c.innerHTML = `
-    <img class="car-photo" src="${a.foto}" alt="">
+    <div class="car-img"><img class="car-photo" src="${a.foto}" alt=""></div>
     <div class="car-body">
       <div><h2>${a.modello}</h2></div>
       <div class="chips">
