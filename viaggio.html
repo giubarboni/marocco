@@ -149,14 +149,14 @@ let out = `<defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidt
 
 // Grandi città fuori dal giro: solo riferimento per orientarsi, volutamente discrete.
 const refCities = [
-  { name: 'Tangeri',    ll: [35.78, -5.80], dx: 7,  anchor: 'start' },
-  { name: 'Oujda',      ll: [34.68, -1.90], dx: -7, anchor: 'end' },
-  { name: 'Rabat',      ll: [34.02, -6.84], dx: -7, anchor: 'end' },
-  { name: 'Casablanca', ll: [33.57, -7.59], dx: -7, anchor: 'end' },
-  { name: 'Agadir',     ll: [30.43, -9.60], dx: -7, anchor: 'end' }
+  { name: 'Tangeri',    ll: [35.78, -5.80], dx: 9,  anchor: 'start' },
+  { name: 'Oujda',      ll: [34.68, -1.90], dx: -9, anchor: 'end' },
+  { name: 'Rabat',      ll: [34.02, -6.84], dx: -9, anchor: 'end' },
+  { name: 'Casablanca', ll: [33.57, -7.59], dx: -9, anchor: 'end' },
+  { name: 'Agadir',     ll: [30.43, -9.60], dx: -9, anchor: 'end' }
 ];
-out += `<g fill="var(--muted)" opacity=".55" font-size="10">${refCities.map(c =>
-  `<circle cx="${X(c.ll[1])}" cy="${Y(c.ll[0])}" r="2.5"/><text x="${X(c.ll[1]) + c.dx}" y="${Y(c.ll[0]) + 3.5}" text-anchor="${c.anchor}">${c.name}</text>`).join('')}</g>`;
+out += `<g fill="var(--muted)" opacity=".7" font-size="12">${refCities.map(c =>
+  `<circle cx="${X(c.ll[1])}" cy="${Y(c.ll[0])}" r="3.5"/><text x="${X(c.ll[1]) + c.dx}" y="${Y(c.ll[0]) + 4}" text-anchor="${c.anchor}">${c.name}</text>`).join('')}</g>`;
 
 const labels = [];
 for (const [a, b, bend, h, ox = 0, oy = 4, anchor = 'middle', noArrow] of segs) {
