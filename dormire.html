@@ -9,11 +9,13 @@
 <style>
   /* Elenco: testo a sinistra, foto a destra. */
   .stays { display: grid; gap: 14px; }
-  .stay { display: flex; align-items: stretch; gap: 14px; max-width: 560px; padding: 12px; border: 1px solid var(--line); border-radius: 18px; background: color-mix(in srgb, var(--land) 35%, var(--bg)); }
+  .stay { display: flex; align-items: stretch; gap: 14px; padding: 12px; border-radius: 18px; background: color-mix(in srgb, var(--land) 35%, var(--bg)); }
   .stay-txt { display: flex; flex: 1; min-width: 0; flex-direction: column; justify-content: center; gap: 2px; line-height: 1.35; }
   .stay-txt b { font-size: 17px; }
   .stay-txt span { color: var(--muted); font-size: 14px; }
   .stay-txt .stay-price { margin-top: 6px; color: var(--ink); font-weight: 700; }
+  .stay-act { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; margin-top: 12px; }
+  .stay-act .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; font-size: 13px; }
   .stay-photo { position: relative; flex: 0 0 42%; aspect-ratio: 1; overflow: hidden; border-radius: 12px; background: var(--line); }
   .stay-photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
   .stay-go { position: absolute; top: 8px; right: 8px; display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 0; border-radius: 50%; background: color-mix(in srgb, var(--bg) 92%, transparent); color: var(--ink); cursor: pointer; }
@@ -28,11 +30,15 @@
 <main class="page" id="root"></main>
 <script src="nav.js"></script>
 <script>
+const PIN = 'M529.5-510.5Q550-531 550-560t-20.5-49.5Q509-630 480-630t-49.5 20.5Q410-589 410-560t20.5 49.5Q451-490 480-490t49.5-20.5ZM480-159q133-121 196.5-219.5T740-552q0-118-75.5-193T480-820q-109 0-184.5 75T220-552q0 75 65 173.5T480-159Zm0 79Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Zm0-480Z', TEL = 'M795-120q-116 0-236.5-56T335-335Q232-438 176-558.5T120-795q0-19.29 12.86-32.14Q145.71-840 165-840h140q14 0 24 10t14 25l26.93 125.64Q372-665 369.5-653.5t-10.73 19.73L259-533q26 44 55 82t64 72q37 38 78 69.5t86 55.5l95-98q10-11 23.15-15 13.15-4 25.85-2l119 26q15 4 25 16.04 10 12.05 10 26.96v135q0 19.29-12.86 32.14Q814.29-120 795-120ZM229-588l81-82-23-110H180q2 42 13.5 88.5T229-588Zm369 363q41 19 89 31t93 14v-107l-103-21-79 83ZM229-588Zm369 363Z';
 const GO = 'm242-246-42-42 412-412H234v-60h480v480h-60v-378L242-246Z';
+// Indicazioni: Google Maps verso l'indirizzo (finché manca, verso la località)
+const mappa = v => `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(v.indirizzo || v.luogo + ', Marocco')}`;
 function stay(v) {
   const c = el('article', 'stay');
   c.innerHTML = `
-    <div class="stay-txt"><b>${v.luogo}</b><span>${v.struttura}</span><span>${v.notti} · ${v.date}</span><span class="stay-price">${v.prezzo}</span></div>
+    <div class="stay-txt"><b>${v.luogo}</b><span>${v.struttura}</span><span>${v.notti} · ${v.date}</span><span class="stay-price">${v.prezzo}</span>
+      <div class="stay-act"><a class="btn" href="${mappa(v)}" target="_blank" rel="noopener">${iconaSvg(PIN, 18)}Ottieni indicazioni</a><button class="btn stay-tel" type="button" disabled title="Non ancora disponibile">${iconaSvg(TEL, 18)}Contatti</button></div></div>
     <div class="stay-photo"><img src="${v.foto}" alt="" loading="lazy"><button class="stay-go" type="button" aria-label="Maggiori dettagli" title="Non ancora disponibile" disabled>${iconaSvg(GO, 18)}</button></div>`;
   if (v.link) { const b = c.querySelector('.stay-go'); b.disabled = false; b.title = 'Maggiori dettagli'; b.onclick = () => open(v.link, '_blank', 'noopener'); }
   return c;

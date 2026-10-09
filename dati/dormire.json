@@ -11,7 +11,9 @@
    "notti": "2 notti",
    "date": "32 dic – 32 dic",
    "prezzo": "00 € totale",
-   "link": null
+   "link": null,
+   "indirizzo": null,
+   "contatto": null
   },
   {
    "luogo": "Cascate di Ouzoud",
@@ -23,7 +25,9 @@
    "notti": "1 notte",
    "date": "32 dic – 32 dic",
    "prezzo": "00 € totale",
-   "link": null
+   "link": null,
+   "indirizzo": null,
+   "contatto": null
   },
   {
    "luogo": "Fès",
@@ -35,7 +39,9 @@
    "notti": "2 notti",
    "date": "32 dic – 32 dic",
    "prezzo": "00 € totale",
-   "link": null
+   "link": null,
+   "indirizzo": null,
+   "contatto": null
   },
   {
    "luogo": "Midelt",
@@ -47,7 +53,9 @@
    "notti": "1 notte",
    "date": "32 dic – 32 dic",
    "prezzo": "00 € totale",
-   "link": null
+   "link": null,
+   "indirizzo": null,
+   "contatto": null
   },
   {
    "luogo": "Merzouga",
@@ -59,7 +67,9 @@
    "notti": "2 notti",
    "date": "32 dic – 32 dic",
    "prezzo": "00 € totale",
-   "link": null
+   "link": null,
+   "indirizzo": null,
+   "contatto": null
   },
   {
    "luogo": "Gole del Todra / Dadès",
@@ -71,7 +81,9 @@
    "notti": "2 notti",
    "date": "32 dic – 32 dic",
    "prezzo": "00 € totale",
-   "link": null
+   "link": null,
+   "indirizzo": null,
+   "contatto": null
   },
   {
    "luogo": "Aït Benhaddou",
@@ -83,7 +95,9 @@
    "notti": "1 notte",
    "date": "32 dic – 32 dic",
    "prezzo": "00 € totale",
-   "link": null
+   "link": null,
+   "indirizzo": null,
+   "contatto": null
   },
   {
    "luogo": "Essaouira",
@@ -95,7 +109,9 @@
    "notti": "2 notti",
    "date": "32 dic – 32 dic",
    "prezzo": "00 € totale",
-   "link": null
+   "link": null,
+   "indirizzo": null,
+   "contatto": null
   },
   {
    "luogo": "Marrakech (rientro)",
@@ -107,7 +123,9 @@
    "notti": "1 notte",
    "date": "32 dic – 32 dic",
    "prezzo": "00 € totale",
-   "link": null
+   "link": null,
+   "indirizzo": null,
+   "contatto": null
   }
  ]
 }
