@@ -19,6 +19,14 @@ body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.45 "Gen
 .navbar a { position: relative; display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--line); color: var(--muted); }
 .navbar a[aria-current] { background: var(--ink); color: var(--bg); }
 
+/* Desktop: la linguetta sta sul bordo destro, in verticale (stessa forma ruotata di 90°) */
+@media (min-width: 701px) {
+  .navbar { top: 50%; left: auto; right: 0; transform: translateY(-50%); width: 68px; height: 340px; padding: 44px 12px; flex-direction: column; }
+  .navbar::before { clip-path: path("M68,0 C68,10 62.7,17 52,22 L18,36 Q0,40 0,58 V282 Q0,300 18,304 L52,318 C62.7,323 68,330 68,340 Z"); }
+  body { padding-right: 68px; }
+  .page { padding-top: 24px; }
+}
+
 /* Pagine interne */
 .page { max-width: 720px; margin: 0 auto; padding: calc(var(--nav) + 16px) 16px 48px; }
 .ptitle { margin: 0 0 16px; font-size: 22px; }

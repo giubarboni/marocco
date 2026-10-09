@@ -11,8 +11,8 @@
   .zoom { position: fixed; inset: 0; overflow: clip; background: var(--sea); touch-action: none; cursor: grab; }
   .zstage { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
   .zstage svg { display: block; max-width: none; }
-  /* Desktop: colonna a destra con elenco tappe e, sotto, la legenda. */
-  .side { position: fixed; z-index: 5; top: calc(50% + var(--nav) / 2); right: 16px; transform: translateY(-50%); width: 360px; max-height: calc(100vh - var(--nav) - 32px); max-height: calc(100dvh - var(--nav) - 32px); display: flex; flex-direction: column; gap: 8px; }
+  /* Desktop: colonna a sinistra con elenco tappe e, sotto, la legenda (la navbar sta a destra). */
+  .side { position: fixed; z-index: 5; top: 50%; left: 16px; transform: translateY(-50%); width: 360px; max-height: calc(100vh - 32px); max-height: calc(100dvh - 32px); display: flex; flex-direction: column; gap: 8px; }
   .legend { flex: none; display: flex; flex-wrap: nowrap; justify-content: center; gap: 14px; padding: 6px 14px; border-radius: 8px; background: color-mix(in srgb, var(--bg) 75%, transparent); color: var(--ink); font-size: 13px; white-space: nowrap; pointer-events: none; }
   .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; }
   .panel { min-height: 0; display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 16px; background: color-mix(in srgb, var(--bg) 88%, transparent); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(60, 45, 20, .18); }
@@ -249,11 +249,12 @@ phead.addEventListener('pointercancel', () => { drag = null; goSnap(snapI); });
 // Inquadratura iniziale: il tragitto (circa 860×460 nel disegno, centro 470,365) centrato nella parte di schermo non coperta dal pannello.
 const fit = () => {
   minSc = calcMin();
-  const w = mobile.matches ? innerWidth : innerWidth - panel.offsetWidth - 32;
-  const h = mobile.matches ? innerHeight - (panel.offsetHeight - snaps()[1]) : innerHeight;
-  const top = navbar.offsetHeight; // la mappa parte sotto la barra in alto
+  const m = mobile.matches;
+  // spazio libero: su desktop tra la colonna a sinistra e la navbar a destra; su mobile sotto la navbar e sopra il bottom sheet
+  const left = m ? 0 : panel.offsetWidth + 32, w = innerWidth - left - (m ? 0 : navbar.offsetWidth);
+  const top = m ? navbar.offsetHeight : 0, h = m ? innerHeight - (panel.offsetHeight - snaps()[1]) : innerHeight;
   sc = Math.min(1.3, Math.max(minSc, .75, Math.min(w / 860, (h - top) / 460)));
-  tx = w / 2 - (470 - VB[0]) * sc; ty = top + (h - top) / 2 - (365 - VB[1]) * sc; apply();
+  tx = left + w / 2 - (470 - VB[0]) * sc; ty = top + (h - top) / 2 - (365 - VB[1]) * sc; apply();
 };
 goSnap(1); fit(); setTimeout(() => panel.classList.remove('drag'), 50);
 
