@@ -6,9 +6,45 @@
 <meta name="theme-color" content="#f6f2ea"><!-- barra di stato del telefono: colore della pagina -->
 <title>Dormire — Marocco</title>
 <link rel="stylesheet" href="stile.css">
+<style>
+  /* Elenco alla Airbnb: foto grande ad angoli arrotondati, sotto poche righe di testo. */
+  .stays { display: grid; grid-template-columns: 1fr 1fr; gap: 28px 20px; }
+  @media (max-width: 700px) { .stays { grid-template-columns: 1fr; gap: 28px; } }
+  .stay-photo { position: relative; aspect-ratio: 20 / 19; overflow: hidden; border-radius: 18px; background: var(--line); }
+  .stay-photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .stay-pill { position: absolute; top: 12px; left: 12px; padding: 5px 12px; border-radius: 999px; background: color-mix(in srgb, var(--bg) 92%, transparent); font-size: 13px; font-weight: 700; }
+  .stay-go { position: absolute; top: 10px; right: 10px; display: grid; place-items: center; width: 36px; height: 36px; padding: 0; border: 0; border-radius: 50%; background: color-mix(in srgb, var(--bg) 92%, transparent); color: var(--ink); cursor: pointer; }
+  .stay-go:disabled { color: var(--muted); opacity: .75; cursor: not-allowed; }
+  .stay-txt { padding: 10px 2px 0; line-height: 1.35; }
+  .stay-txt b { display: block; font-size: 16px; }
+  .stay-txt span { display: block; color: var(--muted); font-size: 14px; }
+  .stay-txt .stay-price { margin-top: 4px; color: var(--ink); font-weight: 700; }
+  .credits { margin-top: 32px; color: var(--muted); font-size: 12px; }
+  .credits summary { cursor: pointer; }
+  .credits p { margin: 6px 0 0; }
+  .credits a { color: inherit; }
+</style>
 </head>
 <body data-page="dormire">
-<main class="page" id="root" data-dati="dormire"></main>
+<main class="page" id="root"></main>
 <script src="nav.js"></script>
+<script>
+const GO = 'm242-246-42-42 412-412H234v-60h480v480h-60v-378L242-246Z';
+function stay(v) {
+  const c = el('article', 'stay');
+  c.innerHTML = `
+    <div class="stay-photo"><img src="${v.foto}" alt="" loading="lazy"><span class="stay-pill">${v.notti}</span><button class="stay-go" type="button" aria-label="Maggiori dettagli" title="Non ancora disponibile" disabled>${iconaSvg(GO, 20)}</button></div>
+    <div class="stay-txt"><b>${v.luogo}</b><span>${v.struttura}</span><span>${v.date}</span><span class="stay-price">${v.prezzo}</span></div>`;
+  if (v.link) { const b = c.querySelector('.stay-go'); b.disabled = false; b.title = 'Maggiori dettagli'; b.onclick = () => open(v.link, '_blank', 'noopener'); }
+  return c;
+}
+load('dormire').then(d => {
+  if (d.mock) root.append(el('p', 'mock', 'Dati di esempio: da sostituire con quelli reali.'));
+  const g = el('div', 'stays'); d.voci.forEach(v => g.append(stay(v))); root.append(g);
+  const cr = el('details', 'credits'); cr.append(el('summary', '', 'Crediti foto'));
+  d.voci.forEach(v => { const p = el('p'), a = el('a', '', `${v.autore} · ${v.licenza}`); a.href = v.fonte; a.target = '_blank'; a.rel = 'noopener'; p.append(`${v.luogo}: `, a); cr.append(p); });
+  root.append(cr);
+}).catch(() => root.append(el('p', 'intro', 'Dati non disponibili.')));
+</script>
 </body>
 </html>
