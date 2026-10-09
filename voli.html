@@ -66,7 +66,6 @@ function biglietto(v, bag) {
 const tacche = () => document.querySelectorAll('.ticket').forEach(t => t.style.setProperty('--cy', t.querySelector('.t-stub').offsetTop + 'px'));
 load('voli').then(d => {
   if (d.mock) root.append(el('p', 'mock', 'Dati di esempio: da sostituire con quelli reali.'));
-  if (d.intro) root.append(el('p', 'intro', d.intro));
   d.voli.forEach(v => root.append(biglietto(v, d.bagagli)));
   tacche(); addEventListener('resize', tacche);
 }).catch(() => root.append(el('p', 'intro', 'Dati non disponibili.')));
