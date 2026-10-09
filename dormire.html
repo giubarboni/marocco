@@ -15,15 +15,16 @@
 <style>
   /* Elenco: testo a sinistra, foto a destra. */
   .stays { display: grid; gap: 14px; }
-  .stay { display: flex; align-items: stretch; gap: 14px; padding: 12px; border-radius: 18px; background: color-mix(in srgb, var(--land) 35%, var(--bg)); }
-  .stay-txt { display: flex; flex: 1; min-width: 0; flex-direction: column; justify-content: center; gap: 2px; line-height: 1.35; }
-  .stay-txt b { font-size: 17px; }
-  .stay-txt span { color: var(--muted); font-size: 14px; }
-  .stay-txt .stay-price { margin-top: 6px; color: var(--ink); font-weight: 700; }
-  .stay-act { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; margin-top: 12px; }
-  .stay-act .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; font-size: 13px; }
-  .stay-photo { position: relative; flex: 0 0 42%; aspect-ratio: 1; overflow: hidden; border-radius: 12px; background: var(--line); }
-  .stay-photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .stay { display: flex; flex-direction: column; gap: 14px; padding: 12px; border-radius: 18px; background: color-mix(in srgb, var(--land) 35%, var(--bg)); }
+  .stay-main { display: flex; gap: 14px; }
+  .stay-txt { display: flex; flex: 1; min-width: 0; flex-direction: column; justify-content: space-between; gap: 16px; padding: 4px 0 4px 4px; line-height: 1.35; }
+  .stay-txt b { display: block; font-size: 17px; }
+  .stay-txt span { display: block; color: var(--muted); font-size: 14px; }
+  .stay-txt .stay-price { margin-top: 2px; color: var(--ink); font-size: 16px; font-weight: 700; }
+  .stay-act { display: flex; gap: 8px; }
+  .stay-act .btn { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 8px; font-size: 13px; white-space: nowrap; }
+  .stay-photo { position: relative; flex: 0 0 120px; min-height: 120px; overflow: hidden; border-radius: 12px; background: var(--line); }
+  .stay-photo img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; }
   .stay-go { position: absolute; top: 8px; right: 8px; display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 0; border-radius: 50%; background: color-mix(in srgb, var(--bg) 92%, transparent); color: var(--ink); cursor: pointer; }
   .stay-go:disabled { color: var(--muted); opacity: .75; cursor: not-allowed; }
   .credits { margin-top: 32px; color: var(--muted); font-size: 12px; }
@@ -43,9 +44,10 @@ const mappa = v => `https://www.google.com/maps/dir/?api=1&destination=${encodeU
 function stay(v) {
   const c = el('article', 'stay');
   c.innerHTML = `
-    <div class="stay-txt"><b>${v.luogo}</b><span>${v.struttura}</span><span>${v.notti} · ${v.date}</span><span class="stay-price">${v.prezzo}</span>
-      <div class="stay-act"><a class="btn" href="${mappa(v)}" target="_blank" rel="noopener">${iconaSvg(PIN, 18)}Ottieni indicazioni</a><button class="btn stay-tel" type="button" disabled title="Non ancora disponibile">${iconaSvg(TEL, 18)}Contatti</button></div></div>
-    <div class="stay-photo"><img src="${v.foto}" alt="" loading="lazy"><button class="stay-go" type="button" aria-label="Maggiori dettagli" title="Non ancora disponibile" disabled>${iconaSvg(GO, 18)}</button></div>`;
+    <div class="stay-main">
+      <div class="stay-txt"><div><b>${v.luogo}</b><span>${v.struttura}</span></div><div><span>${v.notti} · ${v.date}</span><span class="stay-price">${v.prezzo}</span></div></div>
+      <div class="stay-photo"><img src="${v.foto}" alt="" loading="lazy"><button class="stay-go" type="button" aria-label="Maggiori dettagli" title="Non ancora disponibile" disabled>${iconaSvg(GO, 18)}</button></div></div>
+    <div class="stay-act"><a class="btn" href="${mappa(v)}" target="_blank" rel="noopener">${iconaSvg(PIN, 18)}Ottieni indicazioni</a><button class="btn stay-tel" type="button" disabled title="Non ancora disponibile">${iconaSvg(TEL, 18)}Contatti</button></div>`;
   if (v.link) { const b = c.querySelector('.stay-go'); b.disabled = false; b.title = 'Maggiori dettagli'; b.onclick = () => open(v.link, '_blank', 'noopener'); }
   return c;
 }
