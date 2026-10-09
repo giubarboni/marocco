@@ -74,7 +74,6 @@ function auto(a) {
   return c;
 }
 load('auto').then(d => {
-  if (d.mock) root.append(el('p', 'mock', 'Dati di esempio: da sostituire con quelli reali.'));
   if (d.intro) root.append(el('p', 'intro', d.intro));
   const cars = el('div', 'cars'); d.auto.forEach(a => cars.append(auto(a))); root.append(cars);
 }).catch(() => root.append(el('p', 'intro', 'Dati non disponibili.')));

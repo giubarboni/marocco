@@ -51,7 +51,6 @@ function stay(v) {
   return c;
 }
 load('dormire').then(d => {
-  if (d.mock) root.append(el('p', 'mock', 'Dati di esempio: da sostituire con quelli reali.'));
   const g = el('div', 'stays'); d.voci.forEach(v => g.append(stay(v))); root.append(g);
   const cr = el('details', 'credits'); cr.append(el('summary', '', 'Crediti foto'));
   d.voci.forEach(v => { const p = el('p'), a = el('a', '', `${v.autore} · ${v.licenza}`); a.href = v.fonte; a.target = '_blank'; a.rel = 'noopener'; p.append(`${v.luogo}: `, a); cr.append(p); });

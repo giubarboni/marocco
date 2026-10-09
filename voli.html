@@ -65,7 +65,6 @@ function biglietto(v, bag) {
 // la tacca sta sulla linea tratteggiata, all'inizio della parte bassa: si ricalcola se cambia la larghezza
 const tacche = () => document.querySelectorAll('.ticket').forEach(t => t.style.setProperty('--cy', t.querySelector('.t-stub').offsetTop + 'px'));
 load('voli').then(d => {
-  if (d.mock) root.append(el('p', 'mock', 'Dati di esempio: da sostituire con quelli reali.'));
   d.voli.forEach(v => root.append(biglietto(v, d.bagagli)));
   tacche(); addEventListener('resize', tacche);
 }).catch(() => root.append(el('p', 'intro', 'Dati non disponibili.')));

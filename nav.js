@@ -36,9 +36,8 @@ document.body.prepend(navbar);
 // Titolo della pagina (la mappa ha quello del pannello).
 if (cur !== 'mappa') document.querySelector('.page').prepend(el('h1', 'ptitle', PAGES.find(p => p[0] === cur)[2]));
 
-// Elenco di schede da un file dati: { mock, intro, voci: [{ titolo, sottotitolo, stato, campi: [[nome, valore]], bottoni: [[etichetta, link]] }] }
+// Elenco di schede da un file dati: { intro, voci: [{ titolo, sottotitolo, stato, campi: [[nome, valore]], bottoni: [[etichetta, link]] }] }
 function schede(root, d) {
-  if (d.mock) root.append(el('p', 'mock', 'Dati di esempio: da sostituire con quelli reali.'));
   if (d.intro) root.append(el('p', 'intro', d.intro));
   for (const v of d.voci) {
     const card = el('section', 'card'), head = el('div', 'chead'), t = el('div');
