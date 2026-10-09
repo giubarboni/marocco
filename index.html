@@ -11,20 +11,23 @@
   .zoom { position: fixed; inset: 0; overflow: clip; background: var(--sea); touch-action: none; cursor: grab; }
   .zstage { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
   .zstage svg { display: block; max-width: none; }
-  .legend { position: fixed; z-index: 1; left: calc((100% - 372px) / 2); bottom: 20px; transform: translateX(-50%); display: flex; flex-wrap: nowrap; justify-content: center; gap: 16px; padding: 6px 14px; border-radius: 8px; background: color-mix(in srgb, var(--bg) 75%, transparent); color: var(--ink); font-size: 13px; white-space: nowrap; pointer-events: none; }
+  /* Desktop: colonna a destra con elenco tappe e, sotto, la legenda. */
+  .side { position: fixed; z-index: 5; top: calc(50% + var(--nav) / 2); right: 16px; transform: translateY(-50%); width: 360px; max-height: calc(100vh - var(--nav) - 32px); max-height: calc(100dvh - var(--nav) - 32px); display: flex; flex-direction: column; gap: 8px; }
+  .legend { flex: none; display: flex; flex-wrap: nowrap; justify-content: center; gap: 14px; padding: 6px 14px; border-radius: 8px; background: color-mix(in srgb, var(--bg) 75%, transparent); color: var(--ink); font-size: 13px; white-space: nowrap; pointer-events: none; }
   .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; }
-  .panel { position: fixed; z-index: 5; top: calc(50% + var(--nav) / 2); right: 16px; transform: translateY(-50%); width: 340px; max-height: calc(100vh - var(--nav) - 32px); max-height: calc(100dvh - var(--nav) - 32px); display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 16px; background: color-mix(in srgb, var(--bg) 88%, transparent); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(60, 45, 20, .18); }
+  .panel { min-height: 0; display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 16px; background: color-mix(in srgb, var(--bg) 88%, transparent); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(60, 45, 20, .18); }
   .phead { flex: none; padding: 16px 16px 4px; }
   .grab { display: none; width: 36px; height: 4px; margin: 0 auto 12px; border-radius: 2px; background: var(--muted); opacity: .5; }
   .plist { overflow-y: auto; overscroll-behavior: contain; padding: 0 16px 8px; }
+  /* Mobile: bottom sheet; la legenda sta poco sopra il pannello chiuso. */
   @media (max-width: 700px) {
-    .panel { top: auto; left: 0; right: 0; bottom: 0; width: auto; height: calc(100vh - var(--nav) - 8px); height: calc(100dvh - var(--nav) - 8px); max-height: none; border-width: 1px 0 0; border-radius: 16px 16px 0 0; transform: translateY(var(--y, 60%)); transition: transform .25s ease; }
+    .side { display: contents; }
+    .panel { position: fixed; z-index: 5; left: 0; right: 0; bottom: 0; height: calc(100vh - var(--nav) - 8px); height: calc(100dvh - var(--nav) - 8px); border-width: 1px 0 0; border-radius: 16px 16px 0 0; transform: translateY(var(--y, 60%)); transition: transform .25s ease; }
     .panel.drag { transition: none; }
     .phead { padding-top: 8px; touch-action: none; cursor: grab; }
     .grab { display: block; }
-    h1 .d { display: none; }
-      .plist { padding-bottom: max(8px, env(safe-area-inset-bottom)); }
-    .legend { left: 50%; bottom: calc(var(--peek, 62px) + 10px); gap: 10px; padding: 5px 8px; font-size: 11px; }
+    .plist { padding-bottom: max(8px, env(safe-area-inset-bottom)); }
+    .legend { position: fixed; z-index: 1; left: 50%; bottom: calc(var(--peek, 62px) + 10px); transform: translateX(-50%); gap: 10px; padding: 5px 8px; font-size: 11px; }
   }
   .stop, [data-slug] { cursor: pointer; }
   ol li[data-slug]:hover .t { text-decoration: underline; }
@@ -58,16 +61,18 @@
 </head>
 <body data-page="mappa">
 <div class="zoom"><div class="zstage"><svg id="map" viewBox="-860 -440 7860 9600" role="img" aria-label="Mappa dell'itinerario in Marocco"></svg></div></div>
+<div class="side">
+<aside class="panel drag">
+  <div class="phead"><div class="grab"></div><h1>Tappe</h1></div>
+  <ol id="list" class="plist"></ol>
+</aside>
 <div class="legend">
   <span><i style="background:var(--nat)"></i>Natura</span>
   <span><i style="background:var(--city)"></i>Città / cultura</span>
   <span><i style="background:var(--coast)"></i>Costa</span>
   <span><i style="background:var(--transit)"></i>Transito</span>
 </div>
-<aside class="panel drag">
-  <div class="phead"><div class="grab"></div><h1>Tappe</h1></div>
-  <ol id="list" class="plist"></ol>
-</aside>
+</div>
 
 <script src="nav.js"></script>
 <script>
