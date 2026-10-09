@@ -1,47 +1,38 @@
 {
  "mock": true,
- "intro": "Due auto per 6 persone.",
- "voci": [
+ "intro": "Due auto per 6 persone. Valori e foto segnaposto.",
+ "simile": {
+  "titolo": "O modello simile",
+  "testo": "Il modello indicato è un esempio: l'agenzia può consegnare un'auto simile della stessa categoria."
+ },
+ "auto": [
   {
-   "titolo": "Auto 1",
-   "sottotitolo": "SUV tipo Dacia Duster o simile · 3 persone",
-   "stato": "Da prenotare",
-   "campi": [
+   "foto": "foto/auto/1.webp",
+   "credito": "Alexander-93 · CC BY-SA 4.0",
+   "fonte": "https://commons.wikimedia.org/wiki/File:Dacia_Duster_III_IMG_8961.jpg",
+   "modello": "MODELLO AUTO",
+   "bagagli": "0",
+   "persone": "0",
+   "cambio": "M",
+   "clima": "A/C",
+   "prezzoGiorno": "00 €",
+   "totale": "00 €",
+   "dettagli": [
     [
-     "Agenzia",
-     "da definire"
+     "ritiro",
+     "Ritiro · luogo · 32 dic · 00:00"
     ],
     [
-     "Costo",
-     "da definire (15 giorni)"
+     "riconsegna",
+     "Riconsegna · luogo · 32 gen · 00:00"
     ],
     [
-     "Ritiro",
-     "Aeroporto di Marrakech · sab 26 dic · ora da definire"
+     "franchigia",
+     "Franchigia 00 €"
     ],
     [
-     "Riconsegna",
-     "Aeroporto di Marrakech · dom 10 gen · ora da definire"
-    ],
-    [
-     "Franchigia",
-     "importo da definire (verificare assicurazione extra)"
-    ],
-    [
-     "Cauzione",
-     "da definire"
-    ],
-    [
-     "Carburante",
-     "da definire (pieno/pieno?)"
-    ],
-    [
-     "Conducenti",
-     "da definire"
-    ],
-    [
-     "Contatto",
-     "da definire"
+     "cauzione",
+     "Cauzione 00 €"
     ]
    ],
    "bottoni": [
@@ -52,45 +43,32 @@
    ]
   },
   {
-   "titolo": "Auto 2",
-   "sottotitolo": "SUV tipo Dacia Duster o simile · 3 persone",
-   "stato": "Da prenotare",
-   "campi": [
+   "foto": "foto/auto/2.webp",
+   "credito": "Alexander-93 · CC BY-SA 4.0",
+   "fonte": "https://commons.wikimedia.org/wiki/File:Dacia_Duster_III_IMG_8970.jpg",
+   "modello": "MODELLO AUTO",
+   "bagagli": "0",
+   "persone": "0",
+   "cambio": "M",
+   "clima": "A/C",
+   "prezzoGiorno": "00 €",
+   "totale": "00 €",
+   "dettagli": [
     [
-     "Agenzia",
-     "da definire"
+     "ritiro",
+     "Ritiro · luogo · 32 dic · 00:00"
     ],
     [
-     "Costo",
-     "da definire (15 giorni)"
+     "riconsegna",
+     "Riconsegna · luogo · 32 gen · 00:00"
     ],
     [
-     "Ritiro",
-     "Aeroporto di Marrakech · sab 26 dic · ora da definire"
+     "franchigia",
+     "Franchigia 00 €"
     ],
     [
-     "Riconsegna",
-     "Aeroporto di Marrakech · dom 10 gen · ora da definire"
-    ],
-    [
-     "Franchigia",
-     "importo da definire (verificare assicurazione extra)"
-    ],
-    [
-     "Cauzione",
-     "da definire"
-    ],
-    [
-     "Carburante",
-     "da definire (pieno/pieno?)"
-    ],
-    [
-     "Conducenti",
-     "da definire"
-    ],
-    [
-     "Contatto",
-     "da definire"
+     "cauzione",
+     "Cauzione 00 €"
     ]
    ],
    "bottoni": [

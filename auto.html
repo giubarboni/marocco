@@ -5,9 +5,73 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Auto — Marocco</title>
 <link rel="stylesheet" href="stile.css">
+<style>
+  /* Le due auto stanno affiancate; su mobile scorrono in orizzontale. */
+  .cars { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 700px) { .cars { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 -16px; padding: 0 16px 12px; scroll-padding: 0 16px; } .car { flex: 0 0 82%; scroll-snap-align: start; } }
+  .car { display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--line); border-radius: 18px; background: color-mix(in srgb, var(--land) 35%, var(--bg)); }
+  .car-photo { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; background: var(--line); }
+  .car-body { display: flex; flex: 1; flex-direction: column; gap: 14px; padding: 16px; }
+  .car h2 { margin: 0; font-size: 20px; letter-spacing: .01em; }
+  .pill { align-self: flex-start; display: flex; align-items: center; gap: 6px; padding: 4px 6px 4px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--bg); color: var(--ink); font: inherit; font-size: 12px; font-weight: 700; text-transform: uppercase; cursor: pointer; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { display: flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 999px; background: var(--line); font-size: 13px; font-weight: 600; }
+  .car ul { margin: 0; padding: 0; list-style: none; font-size: 13px; color: var(--muted); }
+  .car li { display: flex; align-items: center; gap: 8px; padding: 3px 0; border: 0; }
+  .car li svg, .chip svg, .pill svg { flex: none; }
+  .price { margin-top: auto; }
+  .price b { font-size: 26px; }
+  .price span { color: var(--muted); font-size: 14px; }
+  .price small { display: block; color: var(--muted); font-size: 13px; }
+  .credit { padding: 0 16px 12px; color: var(--muted); font-size: 11px; }
+  .credit a { color: inherit; }
+</style>
 </head>
 <body data-page="auto">
-<main class="page" id="root" data-dati="auto"></main>
+<main class="page" id="root"></main>
 <script src="nav.js"></script>
+<script>
+const ICO = {
+  persone: 'M372-523q-42-42-42-108t42-108q42-42 108-42t108 42q42 42 42 108t-42 108q-42 42-108 42t-108-42ZM160-160v-94q0-38 19-65t49-41q67-30 128.5-45T480-420q62 0 123 15.5T731-360q31 14 50 41t19 65v94H160Zm60-60h520v-34q0-16-9.5-30.5T707-306q-64-31-117-42.5T480-360q-57 0-111 11.5T252-306q-14 7-23 21.5t-9 30.5v34Zm324.5-346.5Q570-592 570-631t-25.5-64.5Q519-721 480-721t-64.5 25.5Q390-670 390-631t25.5 64.5Q441-541 480-541t64.5-25.5ZM480-631Zm0 411Z',
+  clima: 'M450-80v-195L301-126l-43-42 192-192v-90h-90L172-262l-44-41 147-147H80v-60h195L125-660l43-43 192 193h90v-91L262-789l42-44 146 147v-194h60v194l150-150 42 43-192 192v91h91l189-189 43 42-147 147h194v60H686l148 149-41 43-192-192h-91v90l192 193-41 43-151-151v195h-60Z',
+  ritiro: 'M529.5-510.5Q550-531 550-560t-20.5-49.5Q509-630 480-630t-49.5 20.5Q410-589 410-560t20.5 49.5Q451-490 480-490t49.5-20.5ZM480-159q133-121 196.5-219.5T740-552q0-118-75.5-193T480-820q-109 0-184.5 75T220-552q0 75 65 173.5T480-159Zm0 79Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Zm0-480Z',
+  riconsegna: 'M200-120v-680h343l19 86h238v370H544l-18.93-85H260v309h-60Zm300-452Zm95 168h145v-250H511l-19-86H260v251h316l19 85Z',
+  franchigia: 'M480-81q-140-35-230-162.5T160-523v-238l320-120 320 120v238q0 152-90 279.5T480-81Zm0-62q115-38 187.5-143.5T740-523v-196l-260-98-260 98v196q0 131 72.5 236.5T480-143Zm0-337Z',
+  cauzione: 'M540-420q-50 0-85-35t-35-85q0-50 35-85t85-35q50 0 85 35t35 85q0 50-35 85t-85 35ZM220-280q-24.75 0-42.37-17.63Q160-315.25 160-340v-400q0-24.75 17.63-42.38Q195.25-800 220-800h640q24.75 0 42.38 17.62Q920-764.75 920-740v400q0 24.75-17.62 42.37Q884.75-280 860-280H220Zm100-60h440q0-42 29-71t71-29v-200q-42 0-71-29t-29-71H320q0 42-29 71t-71 29v200q42 0 71 29t29 71Zm480 180H100q-24.75 0-42.37-17.63Q40-195.25 40-220v-460h60v460h700v60ZM220-340v-400 400Z'
+};
+const sv = (d, s = 16) => svg(d, s);
+function auto(a, simile) {
+  const c = el('article', 'car');
+  c.innerHTML = `
+    <img class="car-photo" src="${a.foto}" alt="">
+    <div class="car-body">
+      <div><h2>${a.modello}</h2></div>
+      <button class="pill" type="button">o simile ${sv(INFO, 18)}</button>
+      <div class="chips">
+        <span class="chip">${sv(ICO.persone)}${a.persone}</span>
+        <span class="chip">${sv(ICONE.valigia[0])}${a.bagagli}</span>
+        <span class="chip">${a.cambio}</span>
+        <span class="chip">${sv(ICO.clima)}${a.clima}</span>
+      </div>
+      <ul>${a.dettagli.map(([k, t]) => `<li>${sv(ICO[k])}<span>${t}</span></li>`).join('')}</ul>
+      <div class="price"><b>${a.prezzoGiorno}</b> <span>/ giorno</span><small>Totale ${a.totale}</small></div>
+      <div class="actions"></div>
+    </div>
+    <div class="credit">Foto: <a href="${a.fonte}" target="_blank" rel="noopener">${a.credito}</a></div>`;
+  c.querySelector('.pill').onclick = () => modale(simile.titolo, el('p', '', simile.testo));
+  const act = c.querySelector('.actions');
+  for (const [l, u] of a.bottoni) {
+    const b = u ? el('a', 'btn', l) : el('button', 'btn', l);
+    if (u) { b.href = u; b.target = '_blank'; b.rel = 'noopener'; } else { b.type = 'button'; b.disabled = true; b.title = 'Non ancora disponibile'; }
+    act.append(b);
+  }
+  return c;
+}
+load('auto').then(d => {
+  if (d.mock) root.append(el('p', 'mock', 'Dati di esempio: da sostituire con quelli reali.'));
+  if (d.intro) root.append(el('p', 'intro', d.intro));
+  const cars = el('div', 'cars'); d.auto.forEach(a => cars.append(auto(a, d.simile))); root.append(cars);
+}).catch(() => root.append(el('p', 'intro', 'Dati non disponibili.')));
+</script>
 </body>
 </html>

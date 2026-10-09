@@ -3,7 +3,7 @@
 const CACHE = 'marocco-v2';
 const BASE = ['./', 'index.html', 'voli.html', 'auto.html', 'dormire.html', 'valigia.html', 'stile.css', 'nav.js',
   'dati/tappe.md', 'dati/voli.json', 'dati/auto.json', 'dati/dormire.json', 'dati/valigia.json',
-  'loghi/placeholder.svg', 'font/GeneralSans-Variable.woff2', 'font/GeneralSans-Italic.woff2'];
+  'loghi/placeholder.svg', 'foto/auto/1.webp', 'foto/auto/2.webp', 'font/GeneralSans-Variable.woff2', 'font/GeneralSans-Italic.woff2'];
 
 // All'installazione solo l'essenziale (poco peso: se la rete cade a metà, il sito non resta senza funzione offline).
 self.addEventListener('install', e => e.waitUntil(
