@@ -22,14 +22,14 @@
   .side { position: fixed; z-index: 5; top: 50%; left: 16px; transform: translateY(-50%); width: 360px; max-height: calc(100vh - 32px); max-height: calc(100dvh - 32px); display: flex; flex-direction: column; gap: 8px; }
   .legend { flex: none; display: flex; flex-wrap: nowrap; justify-content: center; gap: 14px; padding: 6px 14px; border-radius: 8px; background: color-mix(in srgb, var(--bg) 75%, transparent); color: var(--ink); font-size: 13px; white-space: nowrap; pointer-events: none; }
   .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; }
-  .panel { min-height: 0; display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 16px; background: color-mix(in srgb, var(--bg) 88%, transparent); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(60, 45, 20, .18); }
+  .panel { min-height: 0; display: flex; flex-direction: column; border-radius: 16px; background: color-mix(in srgb, var(--bg) 88%, transparent); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(60, 45, 20, .18); }
   .phead { flex: none; padding: 16px 16px 4px; }
   .grab { display: none; width: 36px; height: 4px; margin: 0 auto 12px; border-radius: 2px; background: var(--muted); opacity: .5; }
   .plist { overflow-y: auto; overscroll-behavior: contain; padding: 0 16px 8px; }
   /* Mobile: bottom sheet; la legenda sta poco sopra il pannello chiuso. */
   @media (max-width: 700px) {
     .side { display: contents; }
-    .panel { position: fixed; z-index: 5; left: 0; right: 0; bottom: 0; height: calc(100vh - var(--nav) - 8px); height: calc(100dvh - var(--nav) - 8px); border-width: 1px 0 0; border-radius: 16px 16px 0 0; transform: translateY(var(--y, 60%)); transition: transform .25s ease; }
+    .panel { position: fixed; z-index: 5; left: 0; right: 0; bottom: 0; height: calc(100vh - var(--nav) - 8px); height: calc(100dvh - var(--nav) - 8px); border-radius: 16px 16px 0 0; transform: translateY(var(--y, 60%)); transition: transform .25s ease; }
     .panel.drag { transition: none; }
     .phead { padding-top: 8px; touch-action: none; cursor: grab; }
     .grab { display: block; }
@@ -57,7 +57,7 @@
   .mtodo { margin: 0; padding-left: 18px; font-size: 14px; }
   .mtodo li { display: list-item; padding: 3px 0; border: 0; font-size: 14px; cursor: default; }
   ol { list-style: none; margin: 0; padding: 0; }
-  li { display: grid; grid-template-columns: 22px 1fr; gap: 8px; padding: 18px 0; font-size: 12px; line-height: 1.35; border-bottom: 1px solid var(--line); }
+  li { display: grid; grid-template-columns: 22px 1fr; gap: 8px; padding: 18px 0; font-size: 12px; line-height: 1.35; border-bottom: 1px solid color-mix(in srgb, var(--line) 45%, transparent); }
   li:last-child { border-bottom: 0; }
   .n { width: 22px; height: 22px; border-radius: 50%; color: var(--dot-ink); font-weight: 700; display: grid; place-items: center; font-size: 11px; }
   .head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 8px; }
