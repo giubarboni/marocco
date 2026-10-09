@@ -12,12 +12,12 @@
 body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.45 "General Sans", system-ui, sans-serif; }
 
 /* Barra in alto con le icone delle sezioni (costruita in nav.js) */
-:root { --nav: 68px; }
-/* Linguetta appesa al bordo alto, dello stesso colore della pagina sotto la mappa e senza ombra: sembra uno strato sotto l'interfaccia, tirata da una parte. La forma è ritagliata con un percorso (340×68), gli angoli in alto si allargano fino ad annullarsi sul bordo. */
+:root { --nav: 68px; --nav-bg: #1c1a17; --nav-btn: #3a352f; --nav-ink: #efe9df; --nav-muted: #a49b8f; } /* la navbar è in versione scura: contrasta con lo sfondo chiaro delle pagine */
+/* Linguetta appesa al bordo alto, senza ombra: sembra uno strato sotto l'interfaccia, tirata da una parte. La forma è ritagliata con un percorso (340×68), gli angoli in alto si allargano fino ad annullarsi sul bordo. */
 .navbar { position: fixed; top: 0; left: 50%; transform: translateX(-50%); z-index: 10; width: 340px; height: var(--nav); padding: 12px 44px; display: flex; justify-content: center; align-items: center; gap: 10px; }
-.navbar::before { content: ""; position: absolute; inset: 0; background: var(--bg); clip-path: path("M0,0 C10,0 17,5.3 22,16 L36,50 Q40,68 58,68 H282 Q300,68 304,50 L318,16 C323,5.3 330,0 340,0 Z"); }
-.navbar a { position: relative; display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--line); color: var(--muted); }
-.navbar a[aria-current] { background: var(--ink); color: var(--bg); }
+.navbar::before { content: ""; position: absolute; inset: 0; background: var(--nav-bg); clip-path: path("M0,0 C10,0 17,5.3 22,16 L36,50 Q40,68 58,68 H282 Q300,68 304,50 L318,16 C323,5.3 330,0 340,0 Z"); }
+.navbar a { position: relative; display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--nav-btn); color: var(--nav-muted); }
+.navbar a[aria-current] { background: var(--nav-ink); color: var(--nav-bg); }
 
 /* Desktop: la linguetta sta sul bordo destro, in verticale (stessa forma ruotata di 90°) */
 @media (min-width: 701px) {
